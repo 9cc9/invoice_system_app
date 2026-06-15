@@ -1,0 +1,14 @@
+{
+  "title": {
+    "app": "Sistema de Facturación"
+  },
+  "message": {
+    "welcome": "invoice_system_app está listo. Puede comenzar a desarrollar funciones de negocio."
+  },
+  "button": {
+    "ok": "Aceptar"
+  },
+  "label": {
+    "loading": "Cargando..."
+  }
+}

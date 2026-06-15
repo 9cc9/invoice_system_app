@@ -1,0 +1,14 @@
+{
+  "title": {
+    "app": "发票系统"
+  },
+  "message": {
+    "welcome": "invoice_system_app 已就绪，可以开始开发业务功能。"
+  },
+  "button": {
+    "ok": "确定"
+  },
+  "label": {
+    "loading": "加载中..."
+  }
+}

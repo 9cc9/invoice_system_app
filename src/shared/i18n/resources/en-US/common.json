@@ -1,0 +1,14 @@
+{
+  "title": {
+    "app": "Invoice System"
+  },
+  "message": {
+    "welcome": "invoice_system_app is ready. You can start building business features."
+  },
+  "button": {
+    "ok": "OK"
+  },
+  "label": {
+    "loading": "Loading..."
+  }
+}
