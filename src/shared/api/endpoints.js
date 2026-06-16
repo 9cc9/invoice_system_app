@@ -1,7 +1,27 @@
 /**
- * API 端点（占位，后续按业务补充）
+ * API 端点
  */
 
 export const API_ENDPOINTS = {
-  HEALTH: '/health.json',
+  AUTH: {
+    LOGIN: '/login.json',
+    LOGOUT: '/logout.json',
+    PROFILE: '/profile.json',
+    CHANGE_PASSWORD: '/profile/changePassword.json',
+  },
+  ENUMS: {
+    EXPENSE_CATEGORIES: '/enums/expenseCategories.json',
+    BUSINESS_CATEGORIES: '/enums/businessCategories.json',
+    FORM_STATUSES: '/enums/reimbursementFormStatuses.json',
+  },
+  REIMBURSEMENT_FORMS: {
+    LIST: '/reimbursementForms/list.json',
+    CREATE: '/reimbursementForms.json',
+    DETAIL: (id) => `/reimbursementForms/${id}.json`,
+    SUBMIT: (id) => `/reimbursementForms/${id}/submit.json`,
+    BATCH_DOWNLOAD: '/reimbursementForms/batchDownload.json',
+  },
+  FILES: {
+    UPLOAD: '/files/upload.json',
+  },
 };

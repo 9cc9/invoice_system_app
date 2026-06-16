@@ -5,5 +5,5 @@
 export const i18nConfig = {
   defaultLanguage: 'zh-CN',
   supportedLanguages: ['zh-CN', 'es-BO', 'en-US'],
-  namespaces: ['common'],
+  namespaces: ['common', 'auth', 'reimbursement'],
 };

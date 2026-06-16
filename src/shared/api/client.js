@@ -3,6 +3,7 @@
  */
 
 import { getApiBaseUrl } from '../constants/config.js';
+import { POST_LOGIN_REDIRECT_KEY } from '../constants/routes.js';
 
 class ApiClient {
   async request(url, options = {}) {
@@ -24,6 +25,26 @@ class ApiClient {
     try {
       const baseURL = getApiBaseUrl();
       const response = await fetch(`${baseURL}${url}`, config);
+
+      if (response.status === 401) {
+        const errorData = await response.json().catch(() => ({}));
+
+        const { useAuthStore } = await import('entities/auth');
+        useAuthStore.getState().clearAuth();
+
+        if (!window.location.pathname.includes('/login')) {
+          const returnPath =
+            window.location.pathname + window.location.search + window.location.hash;
+          try {
+            sessionStorage.setItem(POST_LOGIN_REDIRECT_KEY, returnPath);
+          } catch {
+            // ignore
+          }
+          window.location.href = '/login';
+        }
+
+        throw new Error(errorData.message || '未登录或会话已过期');
+      }
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
@@ -67,6 +88,54 @@ class ApiClient {
 
   async delete(url, options = {}) {
     return this.request(url, { ...options, method: 'DELETE' });
+  }
+
+  /**
+   *  multipart 文件上传
+   */
+  async upload(url, formData, options = {}) {
+    const { method = 'POST', headers = {} } = options;
+
+    const config = {
+      method,
+      headers: { ...headers },
+      credentials: 'include',
+      body: formData,
+    };
+
+    try {
+      const baseURL = getApiBaseUrl();
+      const response = await fetch(`${baseURL}${url}`, config);
+
+      if (response.status === 401) {
+        const errorData = await response.json().catch(() => ({}));
+        const { useAuthStore } = await import('entities/auth');
+        useAuthStore.getState().clearAuth();
+        if (!window.location.pathname.includes('/login')) {
+          try {
+            sessionStorage.setItem(POST_LOGIN_REDIRECT_KEY, window.location.pathname);
+          } catch {
+            // ignore
+          }
+          window.location.href = '/login';
+        }
+        throw new Error(errorData.message || '未登录或会话已过期');
+      }
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      if (data && data.success == false) {
+        throw new Error(data.message || 'Request failed');
+      }
+      return data.data !== undefined ? data.data : data;
+    } catch (error) {
+      console.error('Upload failed:', error);
+      throw error;
+    }
   }
 }
 

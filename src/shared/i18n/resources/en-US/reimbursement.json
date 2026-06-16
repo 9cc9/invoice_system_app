@@ -1,0 +1,77 @@
+{
+  "title": {
+    "createForm": "New Reimbursement Form",
+    "editForm": "Edit Reimbursement Form",
+    "myForms": "My Reimbursement Forms"
+  },
+  "section": {
+    "basicInfo": "Basic Information",
+    "invoiceItems": "Invoice Items"
+  },
+  "form": {
+    "studentAccountNo": "Student ID",
+    "businessCategory": "Business Category",
+    "businessCategoryPlaceholder": "Select business category",
+    "expenseCategory": "Expense Category",
+    "expenseCategoryPlaceholder": "Select expense category",
+    "remark": "Remark",
+    "remarkPlaceholder": "Optional notes for this form"
+  },
+  "item": {
+    "title": "Invoice {{index}}",
+    "invoiceName": "Invoice Name",
+    "invoiceNamePlaceholder": "Enter invoice name or summary",
+    "invoiceFile": "Invoice File",
+    "invoiceAmount": "Invoice Amount",
+    "invoiceAmountAuto": "Invoice Amount (auto-detected)",
+    "actualPaidAmount": "Actual Paid Amount",
+    "paymentRecord": "Payment Record (optional)",
+    "explanationFile": "Explanation File (optional)"
+  },
+  "list": {
+    "itemCount": "{{count}} invoice(s)",
+    "totalAmount": "Total ¥{{amount}}"
+  },
+  "button": {
+    "createForm": "New Form",
+    "addInvoice": "Add Invoice",
+    "removeItem": "Remove",
+    "saveDraft": "Save Draft",
+    "submitForm": "Submit Form",
+    "backToList": "Back to List",
+    "uploadRequired": "Upload File",
+    "uploadOptional": "Upload File (optional)"
+  },
+  "file": {
+    "uploaded": "Uploaded file"
+  },
+  "empty": {
+    "noForms": "No reimbursement forms yet"
+  },
+  "validation": {
+    "businessCategoryRequired": "Please select a business category",
+    "expenseCategoryRequired": "Please select an expense category",
+    "itemsRequired": "Please add at least one invoice",
+    "invoiceNameRequired": "Please enter invoice name",
+    "invoiceFileRequired": "Please upload invoice file",
+    "invoiceAmountRequired": "Please enter invoice amount",
+    "actualPaidAmountRequired": "Please enter actual paid amount",
+    "explanationRequired": "Explanation file is required when actual paid exceeds invoice amount"
+  },
+  "message": {
+    "draftSaved": "Draft saved",
+    "submitSuccess": "Form submitted",
+    "saveFailed": "Save failed",
+    "submitFailed": "Submit failed",
+    "validationFailed": "Please complete the form",
+    "loadOptionsFailed": "Failed to load categories",
+    "loadFormFailed": "Failed to load form",
+    "loadListFailed": "Failed to load form list",
+    "notEditable": "This form cannot be edited",
+    "submittedReadonly": "Submitted forms are read-only",
+    "uploadSuccess": "File uploaded",
+    "uploadFailed": "File upload failed",
+    "invoiceAmountRecognized": "Invoice amount detected automatically",
+    "invoiceAmountNotRecognized": "Could not detect invoice amount, please enter manually"
+  }
+}

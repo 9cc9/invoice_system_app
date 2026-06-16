@@ -1,12 +1,19 @@
 {
   "title": {
-    "app": "Sistema de Facturación"
+    "app": "Sistema de Carga de Facturas",
+    "studentHome": "Panel del Estudiante",
+    "teacherHome": "Panel del Docente"
   },
   "message": {
-    "welcome": "invoice_system_app está listo. Puede comenzar a desarrollar funciones de negocio."
+    "welcome": "Bienvenido al sistema de carga de facturas",
+    "loginSuccess": "Inicio de sesión exitoso",
+    "loginFailed": "Error al iniciar sesión",
+    "logoutSuccess": "Sesión cerrada"
   },
   "button": {
-    "ok": "Aceptar"
+    "ok": "Aceptar",
+    "login": "Iniciar sesión",
+    "logout": "Cerrar sesión"
   },
   "label": {
     "loading": "Cargando..."

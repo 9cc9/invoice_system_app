@@ -1,12 +1,19 @@
 {
   "title": {
-    "app": "Invoice System"
+    "app": "Invoice Upload System",
+    "studentHome": "Student Workspace",
+    "teacherHome": "Teacher Workspace"
   },
   "message": {
-    "welcome": "invoice_system_app is ready. You can start building business features."
+    "welcome": "Welcome to the invoice upload system",
+    "loginSuccess": "Signed in successfully",
+    "loginFailed": "Sign-in failed",
+    "logoutSuccess": "Signed out"
   },
   "button": {
-    "ok": "OK"
+    "ok": "OK",
+    "login": "Sign in",
+    "logout": "Sign out"
   },
   "label": {
     "loading": "Loading..."

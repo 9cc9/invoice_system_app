@@ -1,12 +1,19 @@
 {
   "title": {
-    "app": "发票系统"
+    "app": "发票上传系统",
+    "studentHome": "学生工作台",
+    "teacherHome": "老师工作台"
   },
   "message": {
-    "welcome": "invoice_system_app 已就绪，可以开始开发业务功能。"
+    "welcome": "欢迎使用发票上传系统",
+    "loginSuccess": "登录成功",
+    "loginFailed": "登录失败",
+    "logoutSuccess": "已退出登录"
   },
   "button": {
-    "ok": "确定"
+    "ok": "确定",
+    "login": "登录",
+    "logout": "退出登录"
   },
   "label": {
     "loading": "加载中..."

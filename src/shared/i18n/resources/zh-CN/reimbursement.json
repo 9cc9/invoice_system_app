@@ -1,0 +1,77 @@
+{
+  "title": {
+    "createForm": "新建报销单",
+    "editForm": "编辑报销单",
+    "myForms": "我的报销单"
+  },
+  "section": {
+    "basicInfo": "基本信息",
+    "invoiceItems": "发票明细"
+  },
+  "form": {
+    "studentAccountNo": "学号",
+    "businessCategory": "业务类目",
+    "businessCategoryPlaceholder": "请选择业务类目",
+    "expenseCategory": "报销类目",
+    "expenseCategoryPlaceholder": "请选择报销类目",
+    "remark": "备注",
+    "remarkPlaceholder": "可选，填写整单说明"
+  },
+  "item": {
+    "title": "发票 {{index}}",
+    "invoiceName": "发票名称",
+    "invoiceNamePlaceholder": "请输入发票名称或摘要",
+    "invoiceFile": "发票文件",
+    "invoiceAmount": "发票金额（元）",
+    "invoiceAmountAuto": "发票金额（自动识别）",
+    "actualPaidAmount": "实际支付金额（元）",
+    "paymentRecord": "支付记录（可选）",
+    "explanationFile": "情况说明（可选）"
+  },
+  "list": {
+    "itemCount": "{{count}} 张发票",
+    "totalAmount": "合计 ¥{{amount}}"
+  },
+  "button": {
+    "createForm": "新建报销单",
+    "addInvoice": "添加发票",
+    "removeItem": "删除",
+    "saveDraft": "保存草稿",
+    "submitForm": "提交报销单",
+    "backToList": "返回列表",
+    "uploadRequired": "上传文件",
+    "uploadOptional": "上传文件（可选）"
+  },
+  "file": {
+    "uploaded": "已上传文件"
+  },
+  "empty": {
+    "noForms": "暂无报销单，点击上方按钮开始上传"
+  },
+  "validation": {
+    "businessCategoryRequired": "请选择业务类目",
+    "expenseCategoryRequired": "请选择报销类目",
+    "itemsRequired": "请至少添加一张发票",
+    "invoiceNameRequired": "请输入发票名称",
+    "invoiceFileRequired": "请上传发票文件",
+    "invoiceAmountRequired": "请输入发票金额",
+    "actualPaidAmountRequired": "请输入实际支付金额",
+    "explanationRequired": "实际支付金额大于发票金额时，须上传情况说明"
+  },
+  "message": {
+    "draftSaved": "草稿已保存",
+    "submitSuccess": "报销单已提交",
+    "saveFailed": "保存失败",
+    "submitFailed": "提交失败",
+    "validationFailed": "请完善表单信息",
+    "loadOptionsFailed": "加载类目失败",
+    "loadFormFailed": "加载报销单失败",
+    "loadListFailed": "加载报销单列表失败",
+    "notEditable": "该报销单不可编辑",
+    "submittedReadonly": "已提交的报销单不可编辑",
+    "uploadSuccess": "文件上传成功",
+    "uploadFailed": "文件上传失败",
+    "invoiceAmountRecognized": "已自动识别发票金额",
+    "invoiceAmountNotRecognized": "未能识别发票金额，请手动填写"
+  }
+}

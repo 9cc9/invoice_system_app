@@ -1,0 +1,77 @@
+{
+  "title": {
+    "createForm": "Nuevo Formulario",
+    "editForm": "Editar Formulario",
+    "myForms": "Mis Formularios"
+  },
+  "section": {
+    "basicInfo": "Información Básica",
+    "invoiceItems": "Facturas"
+  },
+  "form": {
+    "studentAccountNo": "Número de estudiante",
+    "businessCategory": "Categoría de negocio",
+    "businessCategoryPlaceholder": "Seleccione categoría de negocio",
+    "expenseCategory": "Categoría de gasto",
+    "expenseCategoryPlaceholder": "Seleccione categoría de gasto",
+    "remark": "Observación",
+    "remarkPlaceholder": "Notas opcionales"
+  },
+  "item": {
+    "title": "Factura {{index}}",
+    "invoiceName": "Nombre de factura",
+    "invoiceNamePlaceholder": "Ingrese nombre o resumen",
+    "invoiceFile": "Archivo de factura",
+    "invoiceAmount": "Monto de factura",
+    "invoiceAmountAuto": "Monto de factura (detectado)",
+    "actualPaidAmount": "Monto pagado real",
+    "paymentRecord": "Comprobante de pago (opcional)",
+    "explanationFile": "Archivo explicativo (opcional)"
+  },
+  "list": {
+    "itemCount": "{{count}} factura(s)",
+    "totalAmount": "Total ¥{{amount}}"
+  },
+  "button": {
+    "createForm": "Nuevo formulario",
+    "addInvoice": "Agregar factura",
+    "removeItem": "Eliminar",
+    "saveDraft": "Guardar borrador",
+    "submitForm": "Enviar formulario",
+    "backToList": "Volver a la lista",
+    "uploadRequired": "Subir archivo",
+    "uploadOptional": "Subir archivo (opcional)"
+  },
+  "file": {
+    "uploaded": "Archivo subido"
+  },
+  "empty": {
+    "noForms": "Aún no hay formularios"
+  },
+  "validation": {
+    "businessCategoryRequired": "Seleccione categoría de negocio",
+    "expenseCategoryRequired": "Seleccione categoría de gasto",
+    "itemsRequired": "Agregue al menos una factura",
+    "invoiceNameRequired": "Ingrese nombre de factura",
+    "invoiceFileRequired": "Suba archivo de factura",
+    "invoiceAmountRequired": "Ingrese monto de factura",
+    "actualPaidAmountRequired": "Ingrese monto pagado real",
+    "explanationRequired": "Se requiere archivo explicativo si el pago real supera la factura"
+  },
+  "message": {
+    "draftSaved": "Borrador guardado",
+    "submitSuccess": "Formulario enviado",
+    "saveFailed": "Error al guardar",
+    "submitFailed": "Error al enviar",
+    "validationFailed": "Complete el formulario",
+    "loadOptionsFailed": "Error al cargar categorías",
+    "loadFormFailed": "Error al cargar formulario",
+    "loadListFailed": "Error al cargar lista",
+    "notEditable": "Este formulario no se puede editar",
+    "submittedReadonly": "Los formularios enviados son de solo lectura",
+    "uploadSuccess": "Archivo subido",
+    "uploadFailed": "Error al subir archivo",
+    "invoiceAmountRecognized": "Monto de factura detectado automáticamente",
+    "invoiceAmountNotRecognized": "No se detectó el monto, ingréselo manualmente"
+  }
+}
