@@ -6,7 +6,8 @@
   },
   "section": {
     "basicInfo": "Basic Information",
-    "invoiceItems": "Invoice Items"
+    "invoiceItems": "Invoice Items",
+    "invoiceRules": "(1) For a single invoice under ¥200, only an e-invoice PDF is required;\n(2) For ¥200 or more, payment records are required (multiple allowed);\n(3) If the issuer and payee differ, check the box and upload an explanation."
   },
   "form": {
     "studentAccountNo": "Student ID",
@@ -22,11 +23,15 @@
     "invoiceName": "Invoice Name",
     "invoiceNamePlaceholder": "Enter invoice name or summary",
     "invoiceFile": "Invoice File",
+    "invoiceFileHint": "Upload an e-invoice PDF file",
     "invoiceAmount": "Invoice Amount",
     "invoiceAmountAuto": "Invoice Amount (auto-detected)",
-    "actualPaidAmount": "Actual Paid Amount",
-    "paymentRecord": "Payment Record (optional)",
-    "explanationFile": "Explanation File (optional)"
+    "paymentRecord": "Payment Records",
+    "paymentRecordHint": "Required when amount is ¥200 or more (up to 5 files)",
+    "issuerPayeeInconsistent": "Issuer and payee information differ",
+    "explanationFile": "Explanation",
+    "viewExplanationTemplate": "View template",
+    "explanationTemplateTitle": "Explanation Template"
   },
   "list": {
     "itemCount": "{{count}} invoice(s)",
@@ -55,11 +60,15 @@
     "invoiceNameRequired": "Please enter invoice name",
     "invoiceFileRequired": "Please upload invoice file",
     "invoiceAmountRequired": "Please enter invoice amount",
-    "actualPaidAmountRequired": "Please enter actual paid amount",
-    "explanationRequired": "Explanation file is required when actual paid exceeds invoice amount"
+    "paymentRecordRequired": "Payment records are required when amount is ¥200 or more",
+    "paymentRecordRequiredWithIndex": "Invoice {{index}}: payment records are required when amount is ¥200 or more",
+    "explanationRequired": "Explanation is required when issuer and payee information differ",
+    "explanationRequiredWithIndex": "Invoice {{index}}: explanation is required when issuer and payee information differ"
   },
   "message": {
     "draftSaved": "Draft saved",
+    "draftSavedTitle": "Draft saved successfully",
+    "draftSavedHint": "You can continue editing or return to the list later.",
     "submitSuccess": "Form submitted",
     "saveFailed": "Save failed",
     "submitFailed": "Submit failed",

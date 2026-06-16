@@ -96,4 +96,34 @@ export const styles = {
     fontSize: '14px',
     marginBottom: '16px',
   },
+  rulesHint: {
+    display: 'block',
+    color: '#64748b',
+    fontSize: '13px',
+    lineHeight: 1.6,
+    marginBottom: '16px',
+    whiteSpace: 'pre-line',
+  },
+  explanationLabel: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '4px',
+    flexWrap: 'wrap',
+  },
+  templateLink: {
+    padding: 0,
+    height: 'auto',
+  },
+  draftSavedModalContent: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    gap: '16px',
+    padding: '8px 0 4px',
+    textAlign: 'center',
+  },
+  draftSavedModalIcon: {
+    fontSize: '48px',
+    color: '#52c41a',
+  },
 };

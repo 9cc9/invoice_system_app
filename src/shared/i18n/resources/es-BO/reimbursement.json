@@ -6,7 +6,8 @@
   },
   "section": {
     "basicInfo": "Información Básica",
-    "invoiceItems": "Facturas"
+    "invoiceItems": "Facturas",
+    "invoiceRules": "(1) Si una factura es menor a ¥200, solo se requiere PDF de factura electrónica;\n(2) Si es ¥200 o más, se requieren comprobantes de pago (pueden ser varios);\n(3) Si emisor y beneficiario difieren, marque la casilla y suba una explicación."
   },
   "form": {
     "studentAccountNo": "Número de estudiante",
@@ -22,11 +23,15 @@
     "invoiceName": "Nombre de factura",
     "invoiceNamePlaceholder": "Ingrese nombre o resumen",
     "invoiceFile": "Archivo de factura",
+    "invoiceFileHint": "Suba un PDF de factura electrónica",
     "invoiceAmount": "Monto de factura",
     "invoiceAmountAuto": "Monto de factura (detectado)",
-    "actualPaidAmount": "Monto pagado real",
-    "paymentRecord": "Comprobante de pago (opcional)",
-    "explanationFile": "Archivo explicativo (opcional)"
+    "paymentRecord": "Comprobantes de pago",
+    "paymentRecordHint": "Obligatorio si el monto es ¥200 o más (máx. 5 archivos)",
+    "issuerPayeeInconsistent": "Emisor y beneficiario no coinciden",
+    "explanationFile": "Explicación",
+    "viewExplanationTemplate": "Ver plantilla",
+    "explanationTemplateTitle": "Plantilla de explicación"
   },
   "list": {
     "itemCount": "{{count}} factura(s)",
@@ -55,11 +60,15 @@
     "invoiceNameRequired": "Ingrese nombre de factura",
     "invoiceFileRequired": "Suba archivo de factura",
     "invoiceAmountRequired": "Ingrese monto de factura",
-    "actualPaidAmountRequired": "Ingrese monto pagado real",
-    "explanationRequired": "Se requiere archivo explicativo si el pago real supera la factura"
+    "paymentRecordRequired": "Se requieren comprobantes de pago si el monto es ¥200 o más",
+    "paymentRecordRequiredWithIndex": "Factura {{index}}: se requieren comprobantes de pago si el monto es ¥200 o más",
+    "explanationRequired": "Se requiere explicación si emisor y beneficiario no coinciden",
+    "explanationRequiredWithIndex": "Factura {{index}}: se requiere explicación si emisor y beneficiario no coinciden"
   },
   "message": {
     "draftSaved": "Borrador guardado",
+    "draftSavedTitle": "Borrador guardado correctamente",
+    "draftSavedHint": "Puede seguir editando o volver a la lista más tarde.",
     "submitSuccess": "Formulario enviado",
     "saveFailed": "Error al guardar",
     "submitFailed": "Error al enviar",

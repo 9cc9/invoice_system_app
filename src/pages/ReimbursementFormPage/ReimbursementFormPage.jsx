@@ -4,8 +4,8 @@
 
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Select, InputNumber, Card } from 'antd';
-import { PlusOutlined, DeleteOutlined, ArrowLeftOutlined } from '@ant-design/icons';
+import { Select, InputNumber, Card, Checkbox, Modal, Image } from 'antd';
+import { PlusOutlined, DeleteOutlined, ArrowLeftOutlined, CheckCircleFilled } from '@ant-design/icons';
 import { Form, FormItem, useForm } from 'shared/ui/Form';
 import { Input } from 'shared/ui/Input';
 import { Button } from 'shared/ui/Button';
@@ -30,12 +30,31 @@ import { styles } from './ReimbursementFormPage.styles';
 
 const { TextArea } = Input;
 
+const PAYMENT_RECORD_THRESHOLD = 200;
+const EXPLANATION_TEMPLATE_URL = '/images/explanation-template.png';
+
+const requiresPaymentRecord = (amount) => {
+  const num = Number(amount);
+  return Number.isFinite(num) && num >= PAYMENT_RECORD_THRESHOLD;
+};
+
 const parseInvoiceAmount = (value) => {
   if (value == null || value === '') {
     return null;
   }
   const num = Number(value);
   return Number.isFinite(num) && num > 0 ? num : null;
+};
+
+const stripFileExtension = (filename) => {
+  if (!filename || typeof filename !== 'string') {
+    return '';
+  }
+  const lastDot = filename.lastIndexOf('.');
+  if (lastDot <= 0) {
+    return filename.trim();
+  }
+  return filename.slice(0, lastDot).trim();
 };
 
 export const ReimbursementFormPage = () => {
@@ -51,6 +70,8 @@ export const ReimbursementFormPage = () => {
   const [businessOptions, setBusinessOptions] = useState([]);
   const [formId, setFormId] = useState(id || null);
   const [autoAmountIndexes, setAutoAmountIndexes] = useState(() => new Set());
+  const [explanationTemplateOpen, setExplanationTemplateOpen] = useState(false);
+  const [draftSavedModalOpen, setDraftSavedModalOpen] = useState(false);
 
   useEffect(() => {
     const loadOptions = async () => {
@@ -94,8 +115,9 @@ export const ReimbursementFormPage = () => {
             invoiceFileUrl: item.invoiceFileUrl,
             invoiceAmount: item.invoiceAmount,
             actualPaidAmount: item.actualPaidAmount,
-            paymentRecordUrl: item.paymentRecordUrl || '',
+            paymentRecordUrls: item.paymentRecordUrls || [],
             explanationFileUrl: item.explanationFileUrl || '',
+            issuerPayeeInconsistent: Boolean(item.explanationFileUrl),
           })),
         });
         setFormId(data.id);
@@ -125,7 +147,7 @@ export const ReimbursementFormPage = () => {
       const values = await form.validateFields();
       setLoading(true);
       await persistForm(values);
-      message.success(t('reimbursement:message.draftSaved'));
+      setDraftSavedModalOpen(true);
     } catch (error) {
       if (error?.errorFields) {
         message.error(t('reimbursement:message.validationFailed'));
@@ -156,6 +178,7 @@ export const ReimbursementFormPage = () => {
     }
 
     const amount = parseInvoiceAmount(result.invoiceAmount);
+    const invoiceName = stripFileExtension(result.originalFilename);
     const nextItems = items.map((item, index) => {
       if (index !== itemIndex) {
         return item;
@@ -164,8 +187,16 @@ export const ReimbursementFormPage = () => {
         ...item,
         invoiceFileUrl: result.fileUrl ?? item.invoiceFileUrl,
       };
+      if (invoiceName) {
+        nextItem.invoiceName = invoiceName;
+      }
       if (amount != null) {
         nextItem.invoiceAmount = amount;
+        if (!requiresPaymentRecord(amount)) {
+          nextItem.paymentRecordUrls = [];
+          nextItem.issuerPayeeInconsistent = false;
+          nextItem.explanationFileUrl = '';
+        }
       }
       return nextItem;
     });
@@ -183,6 +214,37 @@ export const ReimbursementFormPage = () => {
       return next;
     });
     message.warning(t('reimbursement:message.invoiceAmountNotRecognized'));
+  };
+
+  const handleInvoiceAmountChange = (itemIndex, value) => {
+    if (requiresPaymentRecord(value)) {
+      return;
+    }
+    const items = form.getFieldValue('items') || [];
+    const nextItems = items.map((item, index) => (
+      index === itemIndex
+        ? {
+            ...item,
+            paymentRecordUrls: [],
+            issuerPayeeInconsistent: false,
+            explanationFileUrl: '',
+          }
+        : item
+    ));
+    form.setFieldsValue({ items: nextItems });
+  };
+
+  const handleIssuerPayeeInconsistentChange = (itemIndex, checked) => {
+    if (checked) {
+      return;
+    }
+    const items = form.getFieldValue('items') || [];
+    const nextItems = items.map((item, index) => (
+      index === itemIndex
+        ? { ...item, explanationFileUrl: '' }
+        : item
+    ));
+    form.setFieldsValue({ items: nextItems });
   };
 
   const handleRemoveItem = (remove, fieldName, index) => {
@@ -204,6 +266,25 @@ export const ReimbursementFormPage = () => {
     if (!values.items || values.items.length === 0) {
       message.error(t('reimbursement:validation.itemsRequired'));
       return;
+    }
+
+    for (let index = 0; index < values.items.length; index += 1) {
+      const item = values.items[index];
+      if (requiresPaymentRecord(item.invoiceAmount)) {
+        const paymentCount = (item.paymentRecordUrls || []).filter(Boolean).length;
+        if (paymentCount === 0) {
+          message.error(
+            t('reimbursement:validation.paymentRecordRequiredWithIndex', { index: index + 1 }),
+          );
+          return;
+        }
+        if (item.issuerPayeeInconsistent && !item.explanationFileUrl) {
+          message.error(
+            t('reimbursement:validation.explanationRequiredWithIndex', { index: index + 1 }),
+          );
+          return;
+        }
+      }
     }
 
     try {
@@ -285,6 +366,7 @@ export const ReimbursementFormPage = () => {
           </FormItem>
 
           <Text style={styles.sectionTitle}>{t('reimbursement:section.invoiceItems')}</Text>
+          <Text style={styles.rulesHint}>{t('reimbursement:section.invoiceRules')}</Text>
 
           <Form.List
             name="items"
@@ -301,9 +383,12 @@ export const ReimbursementFormPage = () => {
           >
             {(fields, { add, remove }, { errors }) => (
               <>
-                {fields.map((field, index) => (
+                {fields.map((field, index) => {
+                  const { key, ...restField } = field;
+
+                  return (
                   <Card
-                    key={field.key}
+                    key={key}
                     style={styles.itemCard}
                     bordered={false}
                     title={
@@ -313,7 +398,7 @@ export const ReimbursementFormPage = () => {
                             {t('reimbursement:item.title', { index: index + 1 })}
                           </Text>
                           <FormItem
-                            {...field}
+                            {...restField}
                             name={[field.name, 'invoiceName']}
                             rules={[{ required: true, message: t('reimbursement:validation.invoiceNameRequired') }]}
                             style={styles.invoiceNameFormItem}
@@ -339,22 +424,24 @@ export const ReimbursementFormPage = () => {
                     }
                   >
                     <FormItem
-                      {...field}
+                      {...restField}
                       name={[field.name, 'invoiceFileUrl']}
                       label={t('reimbursement:item.invoiceFile')}
+                      extra={t('reimbursement:item.invoiceFileHint')}
                       rules={[{ required: true, message: t('reimbursement:validation.invoiceFileRequired') }]}
                     >
                       <FileUploadField
                         fileType="invoice"
                         formId={formId}
                         itemId={`item-${index}`}
+                        accept=".pdf"
                         required
                         onUploadResult={(result) => handleInvoiceUploadResult(field.name, result)}
                       />
                     </FormItem>
 
                     <FormItem
-                      {...field}
+                      {...restField}
                       name={[field.name, 'invoiceAmount']}
                       label={
                         autoAmountIndexes.has(index)
@@ -369,63 +456,95 @@ export const ReimbursementFormPage = () => {
                         style={{ width: '100%' }}
                         placeholder="0.00"
                         readOnly={autoAmountIndexes.has(index)}
+                        onChange={(value) => handleInvoiceAmountChange(index, value)}
                       />
                     </FormItem>
 
                     <FormItem
-                      {...field}
-                      name={[field.name, 'actualPaidAmount']}
-                      label={t('reimbursement:item.actualPaidAmount')}
-                      rules={[{ required: true, message: t('reimbursement:validation.actualPaidAmountRequired') }]}
+                      noStyle
+                      shouldUpdate={(prev, cur) => {
+                        const prevAmount = prev.items?.[field.name]?.invoiceAmount;
+                        const curAmount = cur.items?.[field.name]?.invoiceAmount;
+                        const prevFlag = prev.items?.[field.name]?.issuerPayeeInconsistent;
+                        const curFlag = cur.items?.[field.name]?.issuerPayeeInconsistent;
+                        return prevAmount !== curAmount || prevFlag !== curFlag;
+                      }}
                     >
-                      <InputNumber
-                        min={0.01}
-                        precision={2}
-                        style={{ width: '100%' }}
-                        placeholder="0.00"
-                      />
-                    </FormItem>
+                      {({ getFieldValue }) => {
+                        const invoiceAmount = getFieldValue(['items', field.name, 'invoiceAmount']);
+                        const needsPaymentRecord = requiresPaymentRecord(invoiceAmount);
+                        const issuerPayeeInconsistent = getFieldValue([
+                          'items',
+                          field.name,
+                          'issuerPayeeInconsistent',
+                        ]);
 
-                    <FormItem
-                      {...field}
-                      name={[field.name, 'paymentRecordUrl']}
-                      label={t('reimbursement:item.paymentRecord')}
-                    >
-                      <FileUploadField fileType="payment" formId={formId} itemId={`item-${index}-payment`} />
-                    </FormItem>
+                        return (
+                          <>
+                            {needsPaymentRecord && (
+                              <>
+                                <FormItem
+                                  {...restField}
+                                  name={[field.name, 'paymentRecordUrls']}
+                                  label={t('reimbursement:item.paymentRecord')}
+                                  extra={t('reimbursement:item.paymentRecordHint')}
+                                >
+                                  <FileUploadField
+                                    fileType="payment"
+                                    formId={formId}
+                                    itemId={`item-${index}-payment`}
+                                    multiple
+                                    maxCount={5}
+                                  />
+                                </FormItem>
 
-                    <FormItem
-                      {...field}
-                      name={[field.name, 'explanationFileUrl']}
-                      label={t('reimbursement:item.explanationFile')}
-                      dependencies={[
-                        ['items', field.name, 'invoiceAmount'],
-                        ['items', field.name, 'actualPaidAmount'],
-                      ]}
-                      rules={[
-                        ({ getFieldValue }) => ({
-                          validator(_, value) {
-                            const invoiceAmount = getFieldValue(['items', field.name, 'invoiceAmount']);
-                            const actualPaidAmount = getFieldValue(['items', field.name, 'actualPaidAmount']);
-                            if (
-                              actualPaidAmount != null
-                              && invoiceAmount != null
-                              && Number(actualPaidAmount) > Number(invoiceAmount)
-                              && !value
-                            ) {
-                              return Promise.reject(
-                                new Error(t('reimbursement:validation.explanationRequired')),
-                              );
-                            }
-                            return Promise.resolve();
-                          },
-                        }),
-                      ]}
-                    >
-                      <FileUploadField fileType="explanation" formId={formId} itemId={`item-${index}-explain`} />
+                                <FormItem
+                                  {...restField}
+                                  name={[field.name, 'issuerPayeeInconsistent']}
+                                  valuePropName="checked"
+                                >
+                                  <Checkbox
+                                    onChange={(event) => (
+                                      handleIssuerPayeeInconsistentChange(index, event.target.checked)
+                                    )}
+                                  >
+                                    {t('reimbursement:item.issuerPayeeInconsistent')}
+                                  </Checkbox>
+                                </FormItem>
+
+                                {issuerPayeeInconsistent && (
+                                  <FormItem
+                                    {...restField}
+                                    name={[field.name, 'explanationFileUrl']}
+                                    label={(
+                                      <View style={styles.explanationLabel}>
+                                        <Text>{t('reimbursement:item.explanationFile')}</Text>
+                                        <Button
+                                          type="link"
+                                          style={styles.templateLink}
+                                          onClick={() => setExplanationTemplateOpen(true)}
+                                        >
+                                          {t('reimbursement:item.viewExplanationTemplate')}
+                                        </Button>
+                                      </View>
+                                    )}
+                                  >
+                                    <FileUploadField
+                                      fileType="explanation"
+                                      formId={formId}
+                                      itemId={`item-${index}-explain`}
+                                    />
+                                  </FormItem>
+                                )}
+                              </>
+                            )}
+                          </>
+                        );
+                      }}
                     </FormItem>
                   </Card>
-                ))}
+                  );
+                })}
 
                 <View style={styles.addButtonWrap}>
                   <Button
@@ -452,6 +571,37 @@ export const ReimbursementFormPage = () => {
           </View>
         </Form>
       </View>
+
+      <Modal
+        open={draftSavedModalOpen}
+        title={t('reimbursement:message.draftSavedTitle')}
+        centered
+        okText={t('common:button.ok')}
+        cancelButtonProps={{ style: { display: 'none' } }}
+        onOk={() => setDraftSavedModalOpen(false)}
+        onCancel={() => setDraftSavedModalOpen(false)}
+      >
+        <View style={styles.draftSavedModalContent}>
+          <CheckCircleFilled style={styles.draftSavedModalIcon} />
+          <Text>{t('reimbursement:message.draftSavedHint')}</Text>
+        </View>
+      </Modal>
+
+      <Modal
+        open={explanationTemplateOpen}
+        title={t('reimbursement:item.explanationTemplateTitle')}
+        footer={null}
+        onCancel={() => setExplanationTemplateOpen(false)}
+        width={720}
+        centered
+      >
+        <Image
+          src={EXPLANATION_TEMPLATE_URL}
+          alt={t('reimbursement:item.explanationTemplateTitle')}
+          style={{ width: '100%' }}
+          preview={false}
+        />
+      </Modal>
     </View>
   );
 };
