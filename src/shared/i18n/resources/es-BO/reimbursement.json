@@ -37,6 +37,33 @@
     "itemCount": "{{count}} factura(s)",
     "totalAmount": "Total ¥{{amount}}"
   },
+  "teacher": {
+    "column": {
+      "studentName": "Nombre",
+      "totalAmount": "Total facturas",
+      "status": "Estado",
+      "submittedAt": "Fecha de envío",
+      "actions": "Acciones",
+      "invoiceCount": "Facturas"
+    },
+    "filter": {
+      "studentNamePlaceholder": "Nombre (búsqueda)",
+      "statusPlaceholder": "Estado"
+    },
+    "button": {
+      "search": "Buscar",
+      "download": "Descargar",
+      "batchDownload": "Descargar ZIP ({{count}})"
+    },
+    "empty": {
+      "noForms": "No hay formularios en esta categoría"
+    },
+    "message": {
+      "selectFormsFirst": "Seleccione al menos un formulario descargable",
+      "downloadSuccess": "Descarga iniciada",
+      "downloadFailed": "Error al descargar"
+    }
+  },
   "button": {
     "createForm": "Nuevo formulario",
     "addInvoice": "Agregar factura",

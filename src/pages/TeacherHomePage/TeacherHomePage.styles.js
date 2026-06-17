@@ -1,38 +1,65 @@
 export const styles = {
-  container: {
+  page: {
     minHeight: '100dvh',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: '24px',
     backgroundColor: '#f8fafc',
+    padding: '24px clamp(16px, 4vw, 32px)',
+    boxSizing: 'border-box',
   },
-  card: {
-    width: '100%',
-    maxWidth: '520px',
-    padding: '32px',
-    borderRadius: '12px',
-    backgroundColor: '#fff',
-    boxShadow: '0 8px 24px rgba(15, 23, 42, 0.08)',
+  header: {
+    maxWidth: '1200px',
+    margin: '0 auto 24px',
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    gap: '16px',
+    flexWrap: 'wrap',
   },
   title: {
     display: 'block',
     fontSize: '24px',
     fontWeight: 700,
     color: '#0f172a',
-    marginBottom: '12px',
-  },
-  welcome: {
-    display: 'block',
-    fontSize: '16px',
-    color: '#334155',
     marginBottom: '8px',
   },
-  hint: {
+  subtitle: {
     display: 'block',
     fontSize: '14px',
     color: '#64748b',
-    marginBottom: '24px',
-    lineHeight: 1.6,
+  },
+  headerActions: {
+    display: 'flex',
+    gap: '12px',
+    flexWrap: 'wrap',
+  },
+  contentCard: {
+    maxWidth: '1200px',
+    margin: '0 auto',
+    backgroundColor: '#fff',
+    borderRadius: '12px',
+    padding: '24px',
+    boxShadow: '0 8px 24px rgba(15, 23, 42, 0.06)',
+  },
+  toolbar: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    gap: '12px',
+    flexWrap: 'wrap',
+    marginBottom: '16px',
+  },
+  filters: {
+    display: 'flex',
+    gap: '12px',
+    flexWrap: 'wrap',
+    flex: 1,
+  },
+  filterInput: {
+    width: '160px',
+  },
+  filterSelect: {
+    width: '140px',
+  },
+  tableWrap: {
+    overflowX: 'auto',
   },
 };

@@ -37,6 +37,33 @@
     "itemCount": "{{count}} 张发票",
     "totalAmount": "合计 ¥{{amount}}"
   },
+  "teacher": {
+    "column": {
+      "studentName": "姓名",
+      "totalAmount": "发票合计",
+      "status": "状态",
+      "submittedAt": "提交时间",
+      "actions": "操作",
+      "invoiceCount": "发票数"
+    },
+    "filter": {
+      "studentNamePlaceholder": "姓名（模糊搜索）",
+      "statusPlaceholder": "状态"
+    },
+    "button": {
+      "search": "查询",
+      "download": "下载",
+      "batchDownload": "打包下载（{{count}}）"
+    },
+    "empty": {
+      "noForms": "该业务类目下暂无学生报销单"
+    },
+    "message": {
+      "selectFormsFirst": "请至少选择一条可下载的报销单",
+      "downloadSuccess": "打包下载成功",
+      "downloadFailed": "打包下载失败"
+    }
+  },
   "button": {
     "createForm": "新建报销单",
     "addInvoice": "添加发票",

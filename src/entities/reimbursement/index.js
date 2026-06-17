@@ -3,6 +3,8 @@ export {
   fetchBusinessCategories,
   fetchFormStatuses,
   listReimbursementForms,
+  batchDownloadReimbursementForms,
+  buildReimbursementDownloadFilename,
   getReimbursementForm,
   createReimbursementForm,
   updateReimbursementForm,

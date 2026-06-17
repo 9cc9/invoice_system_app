@@ -37,6 +37,33 @@
     "itemCount": "{{count}} invoice(s)",
     "totalAmount": "Total ¥{{amount}}"
   },
+  "teacher": {
+    "column": {
+      "studentName": "Name",
+      "totalAmount": "Invoice Total",
+      "status": "Status",
+      "submittedAt": "Submitted At",
+      "actions": "Actions",
+      "invoiceCount": "Invoices"
+    },
+    "filter": {
+      "studentNamePlaceholder": "Name (fuzzy search)",
+      "statusPlaceholder": "Status"
+    },
+    "button": {
+      "search": "Search",
+      "download": "Download",
+      "batchDownload": "Download ZIP ({{count}})"
+    },
+    "empty": {
+      "noForms": "No student forms in this business category"
+    },
+    "message": {
+      "selectFormsFirst": "Select at least one downloadable form",
+      "downloadSuccess": "Download started",
+      "downloadFailed": "Download failed"
+    }
+  },
   "button": {
     "createForm": "New Form",
     "addInvoice": "Add Invoice",
