@@ -24,25 +24,41 @@ export const createEmptyInvoiceItem = () => ({
   invoiceFileUrl: '',
   invoiceAmount: undefined,
   actualPaidAmount: undefined,
+  amountMismatchReason: '',
   paymentRecordUrls: [],
   explanationFileUrl: '',
   issuerPayeeInconsistent: false,
 });
 
+const amountsEqual = (invoiceAmount, paidAmount) => {
+  const invoice = Number(invoiceAmount);
+  const paid = Number(paidAmount);
+  if (!Number.isFinite(invoice) || !Number.isFinite(paid)) {
+    return true;
+  }
+  return Math.abs(invoice - paid) < 0.005;
+};
+
 export const buildFormPayload = (values) => ({
   expenseCategory: values.expenseCategory,
   businessCategory: values.businessCategory,
   remark: values.remark || '',
-  items: (values.items || []).map((item) => ({
-    invoiceName: item.invoiceName,
-    invoiceFileUrl: item.invoiceFileUrl,
-    invoiceAmount: item.invoiceAmount,
-    actualPaidAmount: item.actualPaidAmount,
-    paymentRecordUrls: requiresPaymentRecord(item.invoiceAmount)
-      ? (item.paymentRecordUrls || []).filter(Boolean)
-      : [],
-    explanationFileUrl: requiresPaymentRecord(item.invoiceAmount) && item.issuerPayeeInconsistent
-      ? (item.explanationFileUrl || null)
-      : null,
-  })),
+  items: (values.items || []).map((item) => {
+    const needsPaymentRecord = requiresPaymentRecord(item.invoiceAmount);
+    return {
+      invoiceName: item.invoiceName,
+      invoiceFileUrl: item.invoiceFileUrl,
+      invoiceAmount: item.invoiceAmount,
+      actualPaidAmount: needsPaymentRecord ? item.actualPaidAmount : null,
+      amountMismatchReason: needsPaymentRecord && !amountsEqual(item.invoiceAmount, item.actualPaidAmount)
+        ? (item.amountMismatchReason || '').trim() || null
+        : null,
+      paymentRecordUrls: needsPaymentRecord
+        ? (item.paymentRecordUrls || []).filter(Boolean)
+        : [],
+      explanationFileUrl: needsPaymentRecord && item.issuerPayeeInconsistent
+        ? (item.explanationFileUrl || null)
+        : null,
+    };
+  }),
 });

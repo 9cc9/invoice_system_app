@@ -46,6 +46,15 @@ const parseInvoiceAmount = (value) => {
   return Number.isFinite(num) && num > 0 ? num : null;
 };
 
+const amountsEqual = (invoiceAmount, paidAmount) => {
+  const invoice = Number(invoiceAmount);
+  const paid = Number(paidAmount);
+  if (!Number.isFinite(invoice) || !Number.isFinite(paid)) {
+    return true;
+  }
+  return Math.abs(invoice - paid) < 0.005;
+};
+
 const stripFileExtension = (filename) => {
   if (!filename || typeof filename !== 'string') {
     return '';
@@ -115,6 +124,7 @@ export const ReimbursementFormPage = () => {
             invoiceFileUrl: item.invoiceFileUrl,
             invoiceAmount: item.invoiceAmount,
             actualPaidAmount: item.actualPaidAmount,
+            amountMismatchReason: item.amountMismatchReason || '',
             paymentRecordUrls: item.paymentRecordUrls || [],
             explanationFileUrl: item.explanationFileUrl || '',
             issuerPayeeInconsistent: Boolean(item.explanationFileUrl),
@@ -193,6 +203,8 @@ export const ReimbursementFormPage = () => {
       if (amount != null) {
         nextItem.invoiceAmount = amount;
         if (!requiresPaymentRecord(amount)) {
+          nextItem.actualPaidAmount = undefined;
+          nextItem.amountMismatchReason = '';
           nextItem.paymentRecordUrls = [];
           nextItem.issuerPayeeInconsistent = false;
           nextItem.explanationFileUrl = '';
@@ -217,20 +229,40 @@ export const ReimbursementFormPage = () => {
   };
 
   const handleInvoiceAmountChange = (itemIndex, value) => {
-    if (requiresPaymentRecord(value)) {
-      return;
-    }
     const items = form.getFieldValue('items') || [];
-    const nextItems = items.map((item, index) => (
-      index === itemIndex
-        ? {
-            ...item,
-            paymentRecordUrls: [],
-            issuerPayeeInconsistent: false,
-            explanationFileUrl: '',
-          }
-        : item
-    ));
+    const nextItems = items.map((item, index) => {
+      if (index !== itemIndex) {
+        return item;
+      }
+      const nextItem = { ...item };
+      if (requiresPaymentRecord(value)) {
+        if (amountsEqual(value, item.actualPaidAmount)) {
+          nextItem.amountMismatchReason = '';
+        }
+      } else {
+        nextItem.actualPaidAmount = undefined;
+        nextItem.amountMismatchReason = '';
+        nextItem.paymentRecordUrls = [];
+        nextItem.issuerPayeeInconsistent = false;
+        nextItem.explanationFileUrl = '';
+      }
+      return nextItem;
+    });
+    form.setFieldsValue({ items: nextItems });
+  };
+
+  const handleActualPaidAmountChange = (itemIndex, value) => {
+    const items = form.getFieldValue('items') || [];
+    const nextItems = items.map((item, index) => {
+      if (index !== itemIndex) {
+        return item;
+      }
+      const nextItem = { ...item, actualPaidAmount: value };
+      if (amountsEqual(item.invoiceAmount, value)) {
+        nextItem.amountMismatchReason = '';
+      }
+      return nextItem;
+    });
     form.setFieldsValue({ items: nextItems });
   };
 
@@ -271,6 +303,21 @@ export const ReimbursementFormPage = () => {
     for (let index = 0; index < values.items.length; index += 1) {
       const item = values.items[index];
       if (requiresPaymentRecord(item.invoiceAmount)) {
+        if (item.actualPaidAmount == null || item.actualPaidAmount === '') {
+          message.error(
+            t('reimbursement:validation.actualPaidAmountRequiredWithIndex', { index: index + 1 }),
+          );
+          return;
+        }
+        if (!amountsEqual(item.invoiceAmount, item.actualPaidAmount)) {
+          const reason = (item.amountMismatchReason || '').trim();
+          if (!reason) {
+            message.error(
+              t('reimbursement:validation.amountMismatchReasonRequiredWithIndex', { index: index + 1 }),
+            );
+            return;
+          }
+        }
         const paymentCount = (item.paymentRecordUrls || []).filter(Boolean).length;
         if (paymentCount === 0) {
           message.error(
@@ -465,14 +512,20 @@ export const ReimbursementFormPage = () => {
                       shouldUpdate={(prev, cur) => {
                         const prevAmount = prev.items?.[field.name]?.invoiceAmount;
                         const curAmount = cur.items?.[field.name]?.invoiceAmount;
+                        const prevPaid = prev.items?.[field.name]?.actualPaidAmount;
+                        const curPaid = cur.items?.[field.name]?.actualPaidAmount;
                         const prevFlag = prev.items?.[field.name]?.issuerPayeeInconsistent;
                         const curFlag = cur.items?.[field.name]?.issuerPayeeInconsistent;
-                        return prevAmount !== curAmount || prevFlag !== curFlag;
+                        return prevAmount !== curAmount
+                          || prevPaid !== curPaid
+                          || prevFlag !== curFlag;
                       }}
                     >
                       {({ getFieldValue }) => {
                         const invoiceAmount = getFieldValue(['items', field.name, 'invoiceAmount']);
+                        const actualPaidAmount = getFieldValue(['items', field.name, 'actualPaidAmount']);
                         const needsPaymentRecord = requiresPaymentRecord(invoiceAmount);
+                        const amountsMatch = amountsEqual(invoiceAmount, actualPaidAmount);
                         const issuerPayeeInconsistent = getFieldValue([
                           'items',
                           field.name,
@@ -483,6 +536,40 @@ export const ReimbursementFormPage = () => {
                           <>
                             {needsPaymentRecord && (
                               <>
+                                <FormItem
+                                  {...restField}
+                                  name={[field.name, 'actualPaidAmount']}
+                                  label={t('reimbursement:item.actualPaidAmount')}
+                                  extra={t('reimbursement:item.actualPaidAmountHint')}
+                                  rules={[
+                                    {
+                                      required: true,
+                                      message: t('reimbursement:validation.actualPaidAmountRequired'),
+                                    },
+                                  ]}
+                                >
+                                  <InputNumber
+                                    min={0.01}
+                                    precision={2}
+                                    style={{ width: '100%' }}
+                                    placeholder="0.00"
+                                    onChange={(value) => handleActualPaidAmountChange(index, value)}
+                                  />
+                                </FormItem>
+
+                                {!amountsMatch && (
+                                  <FormItem
+                                    {...restField}
+                                    name={[field.name, 'amountMismatchReason']}
+                                    label={t('reimbursement:item.amountMismatchReason')}
+                                  >
+                                    <Input
+                                      placeholder={t('reimbursement:item.amountMismatchReasonPlaceholder')}
+                                      maxLength={512}
+                                    />
+                                  </FormItem>
+                                )}
+
                                 <FormItem
                                   {...restField}
                                   name={[field.name, 'paymentRecordUrls']}

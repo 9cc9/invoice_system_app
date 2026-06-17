@@ -7,7 +7,7 @@
   "section": {
     "basicInfo": "Basic Information",
     "invoiceItems": "Invoice Items",
-    "invoiceRules": "(1) For a single invoice under ¥200, only an e-invoice PDF is required;\n(2) For ¥200 or more, payment records are required (multiple allowed);\n(3) If the issuer and payee differ, check the box and upload an explanation."
+    "invoiceRules": "(1) For a single invoice under ¥200, only an e-invoice PDF is required;\n(2) For ¥200 or more, manually enter actual payment amount based on payment records and upload payment records (multiple allowed); if it differs from the invoice amount, explain why;\n(3) If the issuer and payee differ, check the box and upload an explanation."
   },
   "form": {
     "studentAccountNo": "Student ID",
@@ -26,6 +26,10 @@
     "invoiceFileHint": "Upload an e-invoice PDF file",
     "invoiceAmount": "Invoice Amount",
     "invoiceAmountAuto": "Invoice Amount (auto-detected)",
+    "actualPaidAmount": "Actual Payment Amount",
+    "actualPaidAmountHint": "Enter manually based on payment records; the system will verify against the invoice amount",
+    "amountMismatchReason": "Reason for Amount Difference",
+    "amountMismatchReasonPlaceholder": "Briefly explain why payment amount differs from invoice amount",
     "paymentRecord": "Payment Records",
     "paymentRecordHint": "Required when amount is ¥200 or more (up to 5 files)",
     "issuerPayeeInconsistent": "Issuer and payee information differ",
@@ -87,6 +91,10 @@
     "invoiceNameRequired": "Please enter invoice name",
     "invoiceFileRequired": "Please upload invoice file",
     "invoiceAmountRequired": "Please enter invoice amount",
+    "actualPaidAmountRequired": "Please enter actual payment amount",
+    "actualPaidAmountRequiredWithIndex": "Invoice {{index}}: please enter actual payment amount",
+    "amountMismatchReasonRequired": "Reason is required when payment amount differs from invoice amount",
+    "amountMismatchReasonRequiredWithIndex": "Invoice {{index}}: reason is required when amounts differ",
     "paymentRecordRequired": "Payment records are required when amount is ¥200 or more",
     "paymentRecordRequiredWithIndex": "Invoice {{index}}: payment records are required when amount is ¥200 or more",
     "explanationRequired": "Explanation is required when issuer and payee information differ",

@@ -7,7 +7,7 @@
   "section": {
     "basicInfo": "Información Básica",
     "invoiceItems": "Facturas",
-    "invoiceRules": "(1) Si una factura es menor a ¥200, solo se requiere PDF de factura electrónica;\n(2) Si es ¥200 o más, se requieren comprobantes de pago (pueden ser varios);\n(3) Si emisor y beneficiario difieren, marque la casilla y suba una explicación."
+    "invoiceRules": "(1) Si una factura es menor a ¥200, solo se requiere PDF de factura electrónica;\n(2) Si es ¥200 o más, ingrese manualmente el monto pagado según comprobantes y suba comprobantes de pago (pueden ser varios); si difiere del monto de factura, explique el motivo;\n(3) Si emisor y beneficiario difieren, marque la casilla y suba una explicación."
   },
   "form": {
     "studentAccountNo": "Número de estudiante",
@@ -26,6 +26,10 @@
     "invoiceFileHint": "Suba un PDF de factura electrónica",
     "invoiceAmount": "Monto de factura",
     "invoiceAmountAuto": "Monto de factura (detectado)",
+    "actualPaidAmount": "Monto pagado real",
+    "actualPaidAmountHint": "Ingrese manualmente según los comprobantes de pago; el sistema verificará contra el monto de factura",
+    "amountMismatchReason": "Motivo de diferencia de monto",
+    "amountMismatchReasonPlaceholder": "Explique brevemente por qué el monto pagado difiere del monto de factura",
     "paymentRecord": "Comprobantes de pago",
     "paymentRecordHint": "Obligatorio si el monto es ¥200 o más (máx. 5 archivos)",
     "issuerPayeeInconsistent": "Emisor y beneficiario no coinciden",
@@ -87,6 +91,10 @@
     "invoiceNameRequired": "Ingrese nombre de factura",
     "invoiceFileRequired": "Suba archivo de factura",
     "invoiceAmountRequired": "Ingrese monto de factura",
+    "actualPaidAmountRequired": "Ingrese monto pagado real",
+    "actualPaidAmountRequiredWithIndex": "Factura {{index}}: ingrese monto pagado real",
+    "amountMismatchReasonRequired": "Se requiere motivo si el monto pagado difiere del monto de factura",
+    "amountMismatchReasonRequiredWithIndex": "Factura {{index}}: se requiere motivo si los montos difieren",
     "paymentRecordRequired": "Se requieren comprobantes de pago si el monto es ¥200 o más",
     "paymentRecordRequiredWithIndex": "Factura {{index}}: se requieren comprobantes de pago si el monto es ¥200 o más",
     "explanationRequired": "Se requiere explicación si emisor y beneficiario no coinciden",
