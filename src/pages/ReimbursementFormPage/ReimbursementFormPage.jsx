@@ -4,8 +4,8 @@
 
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Select, InputNumber, Card, Checkbox, Modal, Image } from 'antd';
-import { PlusOutlined, DeleteOutlined, ArrowLeftOutlined, CheckCircleFilled } from '@ant-design/icons';
+import { Select, InputNumber, Card, Checkbox, Modal, Image, Tooltip } from 'antd';
+import { PlusOutlined, DeleteOutlined, ArrowLeftOutlined, CheckCircleFilled, QuestionCircleOutlined } from '@ant-design/icons';
 import { Form, FormItem, useForm } from 'shared/ui/Form';
 import { Input } from 'shared/ui/Input';
 import { Button } from 'shared/ui/Button';
@@ -126,6 +126,8 @@ export const ReimbursementFormPage = () => {
             actualPaidAmount: item.actualPaidAmount,
             amountMismatchReason: item.amountMismatchReason || '',
             paymentRecordUrls: item.paymentRecordUrls || [],
+            hasVagueItemName: Boolean(item.hasVagueItemName),
+            purchaseListFileUrl: item.purchaseListFileUrl || '',
             explanationFileUrl: item.explanationFileUrl || '',
             issuerPayeeInconsistent: Boolean(item.explanationFileUrl),
           })),
@@ -206,6 +208,8 @@ export const ReimbursementFormPage = () => {
           nextItem.actualPaidAmount = undefined;
           nextItem.amountMismatchReason = '';
           nextItem.paymentRecordUrls = [];
+          nextItem.hasVagueItemName = false;
+          nextItem.purchaseListFileUrl = '';
           nextItem.issuerPayeeInconsistent = false;
           nextItem.explanationFileUrl = '';
         }
@@ -243,6 +247,8 @@ export const ReimbursementFormPage = () => {
         nextItem.actualPaidAmount = undefined;
         nextItem.amountMismatchReason = '';
         nextItem.paymentRecordUrls = [];
+        nextItem.hasVagueItemName = false;
+        nextItem.purchaseListFileUrl = '';
         nextItem.issuerPayeeInconsistent = false;
         nextItem.explanationFileUrl = '';
       }
@@ -274,6 +280,19 @@ export const ReimbursementFormPage = () => {
     const nextItems = items.map((item, index) => (
       index === itemIndex
         ? { ...item, explanationFileUrl: '' }
+        : item
+    ));
+    form.setFieldsValue({ items: nextItems });
+  };
+
+  const handleHasVagueItemNameChange = (itemIndex, checked) => {
+    if (checked) {
+      return;
+    }
+    const items = form.getFieldValue('items') || [];
+    const nextItems = items.map((item, index) => (
+      index === itemIndex
+        ? { ...item, purchaseListFileUrl: '' }
         : item
     ));
     form.setFieldsValue({ items: nextItems });
@@ -328,6 +347,12 @@ export const ReimbursementFormPage = () => {
         if (item.issuerPayeeInconsistent && !item.explanationFileUrl) {
           message.error(
             t('reimbursement:validation.explanationRequiredWithIndex', { index: index + 1 }),
+          );
+          return;
+        }
+        if (item.hasVagueItemName && !item.purchaseListFileUrl) {
+          message.error(
+            t('reimbursement:validation.purchaseListRequiredWithIndex', { index: index + 1 }),
           );
           return;
         }
@@ -516,9 +541,12 @@ export const ReimbursementFormPage = () => {
                         const curPaid = cur.items?.[field.name]?.actualPaidAmount;
                         const prevFlag = prev.items?.[field.name]?.issuerPayeeInconsistent;
                         const curFlag = cur.items?.[field.name]?.issuerPayeeInconsistent;
+                        const prevVague = prev.items?.[field.name]?.hasVagueItemName;
+                        const curVague = cur.items?.[field.name]?.hasVagueItemName;
                         return prevAmount !== curAmount
                           || prevPaid !== curPaid
-                          || prevFlag !== curFlag;
+                          || prevFlag !== curFlag
+                          || prevVague !== curVague;
                       }}
                     >
                       {({ getFieldValue }) => {
@@ -530,6 +558,11 @@ export const ReimbursementFormPage = () => {
                           'items',
                           field.name,
                           'issuerPayeeInconsistent',
+                        ]);
+                        const hasVagueItemName = getFieldValue([
+                          'items',
+                          field.name,
+                          'hasVagueItemName',
                         ]);
 
                         return (
@@ -584,6 +617,39 @@ export const ReimbursementFormPage = () => {
                                     maxCount={5}
                                   />
                                 </FormItem>
+
+                                <FormItem
+                                  {...restField}
+                                  name={[field.name, 'hasVagueItemName']}
+                                  valuePropName="checked"
+                                >
+                                  <Checkbox
+                                    onChange={(event) => (
+                                      handleHasVagueItemNameChange(index, event.target.checked)
+                                    )}
+                                  >
+                                    <View style={styles.checkboxLabel}>
+                                      <Text>{t('reimbursement:item.hasVagueItemName')}</Text>
+                                      <Tooltip title={t('reimbursement:item.purchaseListTooltip')}>
+                                        <QuestionCircleOutlined style={styles.helpIcon} />
+                                      </Tooltip>
+                                    </View>
+                                  </Checkbox>
+                                </FormItem>
+
+                                {hasVagueItemName && (
+                                  <FormItem
+                                    {...restField}
+                                    name={[field.name, 'purchaseListFileUrl']}
+                                    label={t('reimbursement:item.purchaseListFile')}
+                                  >
+                                    <FileUploadField
+                                      fileType="purchaseList"
+                                      formId={formId}
+                                      itemId={`item-${index}-purchase-list`}
+                                    />
+                                  </FormItem>
+                                )}
 
                                 <FormItem
                                   {...restField}

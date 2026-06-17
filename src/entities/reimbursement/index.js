@@ -26,6 +26,8 @@ export const createEmptyInvoiceItem = () => ({
   actualPaidAmount: undefined,
   amountMismatchReason: '',
   paymentRecordUrls: [],
+  hasVagueItemName: false,
+  purchaseListFileUrl: '',
   explanationFileUrl: '',
   issuerPayeeInconsistent: false,
 });
@@ -58,6 +60,10 @@ export const buildFormPayload = (values) => ({
         : [],
       explanationFileUrl: needsPaymentRecord && item.issuerPayeeInconsistent
         ? (item.explanationFileUrl || null)
+        : null,
+      hasVagueItemName: needsPaymentRecord ? Boolean(item.hasVagueItemName) : false,
+      purchaseListFileUrl: needsPaymentRecord && item.hasVagueItemName
+        ? (item.purchaseListFileUrl || null)
         : null,
     };
   }),

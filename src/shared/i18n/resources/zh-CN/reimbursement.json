@@ -7,7 +7,7 @@
   "section": {
     "basicInfo": "基本信息",
     "invoiceItems": "发票明细",
-    "invoiceRules": "（1）单张发票金额 < 200 元，只需上传电子发票 PDF；\n（2）单张发票金额 ≥ 200 元，须根据支付记录手动填写实际支付金额并上传支付记录（可多条）；若与发票金额不一致，须说明原因；\n（3）若开票方与收款方信息不一致，须勾选并上传情况说明。"
+    "invoiceRules": "（1）单张发票金额 < 200 元，只需上传电子发票 PDF；\n（2）单张发票金额 ≥ 200 元，须根据支付记录手动填写实际支付金额并上传支付记录（可多条）；若与发票金额不一致，须说明原因；\n（3）若发票品名为元器件、批、套，或未标注具体品名、数量，须勾选并上传购置清单；\n（4）若开票方与收款方信息不一致，须勾选并上传情况说明。"
   },
   "form": {
     "studentAccountNo": "学号",
@@ -32,6 +32,9 @@
     "amountMismatchReasonPlaceholder": "请用一句话说明支付金额与发票金额不一致的原因",
     "paymentRecord": "支付记录",
     "paymentRecordHint": "金额 ≥ 200 元时必填，可上传多条（最多 5 个）",
+    "hasVagueItemName": "发票品名为元器件、批、套，或未标注具体品名、数量",
+    "purchaseListTooltip": "无正式清单的，可上传淘宝订单截图作为明细依据",
+    "purchaseListFile": "购置清单",
     "issuerPayeeInconsistent": "开票方与收款方信息不一致",
     "explanationFile": "情况说明",
     "viewExplanationTemplate": "查看模版",
@@ -98,7 +101,9 @@
     "paymentRecordRequired": "发票金额 ≥ 200 元时须上传支付记录",
     "paymentRecordRequiredWithIndex": "发票 {{index}}：金额 ≥ 200 元时须上传支付记录",
     "explanationRequired": "开票方与收款方信息不一致时须上传情况说明",
-    "explanationRequiredWithIndex": "发票 {{index}}：开票方与收款方信息不一致时须上传情况说明"
+    "explanationRequiredWithIndex": "发票 {{index}}：开票方与收款方信息不一致时须上传情况说明",
+    "purchaseListRequired": "发票品名不规范时须上传购置清单",
+    "purchaseListRequiredWithIndex": "发票 {{index}}：发票品名不规范时须上传购置清单"
   },
   "message": {
     "draftSaved": "草稿已保存",

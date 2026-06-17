@@ -114,6 +114,16 @@ export const styles = {
     padding: 0,
     height: 'auto',
   },
+  checkboxLabel: {
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: '6px',
+  },
+  helpIcon: {
+    color: '#94a3b8',
+    fontSize: '14px',
+    cursor: 'help',
+  },
   draftSavedModalContent: {
     display: 'flex',
     flexDirection: 'column',
