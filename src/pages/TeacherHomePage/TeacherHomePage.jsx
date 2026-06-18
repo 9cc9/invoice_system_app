@@ -172,6 +172,14 @@ export const TeacherHomePage = () => {
         render: (_, record) => t('reimbursement:list.totalAmount', { amount: record.totalInvoiceAmount ?? 0 }),
       },
       {
+        title: t('reimbursement:form.remark'),
+        dataIndex: 'remark',
+        key: 'remark',
+        width: 160,
+        ellipsis: true,
+        render: (value) => value || '-',
+      },
+      {
         title: t('reimbursement:teacher.column.status'),
         dataIndex: 'status',
         key: 'status',
@@ -282,7 +290,7 @@ export const TeacherHomePage = () => {
                 disabled: !DOWNLOADABLE_STATUSES.has(record.status),
               }),
             }}
-            scroll={{ x: 960 }}
+            scroll={{ x: 1120 }}
           />
         </View>
       </View>

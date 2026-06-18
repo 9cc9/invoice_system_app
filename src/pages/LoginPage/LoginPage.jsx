@@ -4,6 +4,7 @@
 
 import { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { Select } from 'antd';
 import { Form, FormItem, useForm } from 'shared/ui/Form';
 import { Input } from 'shared/ui/Input';
 import { Button } from 'shared/ui/Button';
@@ -13,6 +14,7 @@ import { Text } from 'shared/ui/Text';
 import {
   useAuthStore,
   LOGIN_MODES,
+  USER_ROLES,
   getHomeRouteByRole,
   canAccessLoginMode,
 } from 'entities/auth';
@@ -20,6 +22,8 @@ import { POST_LOGIN_REDIRECT_KEY } from 'shared/constants/routes';
 import { useTranslation } from 'shared/hooks/useTranslation';
 import { LanguageSwitcher } from 'components/i18n';
 import { styles } from './LoginPage.styles';
+
+const DEFAULT_UPLOAD_PASSWORD = 'password123';
 
 export const LoginPage = () => {
   const navigate = useNavigate();
@@ -54,11 +58,35 @@ export const LoginPage = () => {
 
   const handleModeSwitch = (mode) => {
     setLoginMode(mode);
+    form.resetFields();
+    if (mode === LOGIN_MODES.UPLOAD) {
+      form.setFieldsValue({
+        role: USER_ROLES.STUDENT,
+        password: DEFAULT_UPLOAD_PASSWORD,
+      });
+    }
   };
 
+  useEffect(() => {
+    if (loginMode === LOGIN_MODES.UPLOAD) {
+      form.setFieldsValue({
+        role: USER_ROLES.STUDENT,
+        password: DEFAULT_UPLOAD_PASSWORD,
+      });
+    }
+  }, [form, loginMode]);
+
+  const isUploadMode = loginMode === LOGIN_MODES.UPLOAD;
+
   const handleSubmit = async (values) => {
-    const { accountNo, password } = values;
-    const result = await login(accountNo.trim(), password);
+    const { accountNo, password, name, role } = values;
+    const result = await login({
+      accountNo: accountNo.trim(),
+      password,
+      ...(isUploadMode
+        ? { name: name?.trim(), role }
+        : {}),
+    });
 
     if (!result.success) {
       message.error(result.error || t('common:message.loginFailed'));
@@ -79,8 +107,6 @@ export const LoginPage = () => {
     message.success(t('common:message.loginSuccess'));
     navigate(getRedirectPath(result.user), { replace: true });
   };
-
-  const isUploadMode = loginMode === LOGIN_MODES.UPLOAD;
 
   return (
     <View style={styles.loginPage}>
@@ -128,7 +154,42 @@ export const LoginPage = () => {
           layout="vertical"
           autoComplete="off"
           size="large"
+          initialValues={
+            isUploadMode
+              ? { role: USER_ROLES.STUDENT, password: DEFAULT_UPLOAD_PASSWORD }
+              : undefined
+          }
         >
+          {isUploadMode && (
+            <>
+              <FormItem
+                name="role"
+                label={t('auth:form.roleLabel')}
+                rules={[
+                  { required: true, message: t('auth:validation.roleRequired') },
+                ]}
+              >
+                <Select
+                  placeholder={t('auth:form.rolePlaceholder')}
+                  options={[
+                    { value: USER_ROLES.STUDENT, label: t('auth:form.roleStudent') },
+                    { value: USER_ROLES.TEACHER, label: t('auth:form.roleTeacher') },
+                  ]}
+                />
+              </FormItem>
+
+              <FormItem
+                name="name"
+                label={t('auth:form.nameLabel')}
+                rules={[
+                  { required: true, message: t('auth:validation.nameRequired') },
+                ]}
+              >
+                <Input placeholder={t('auth:form.namePlaceholder')} />
+              </FormItem>
+            </>
+          )}
+
           <FormItem
             name="accountNo"
             label={t('auth:form.accountLabel')}
@@ -147,7 +208,13 @@ export const LoginPage = () => {
               { min: 6, message: t('auth:validation.passwordMinLength') },
             ]}
           >
-            <Input.Password placeholder={t('auth:form.passwordPlaceholder')} />
+            <Input.Password
+              placeholder={
+                isUploadMode
+                  ? t('auth:form.uploadPasswordPlaceholder')
+                  : t('auth:form.passwordPlaceholder')
+              }
+            />
           </FormItem>
 
           {error && (

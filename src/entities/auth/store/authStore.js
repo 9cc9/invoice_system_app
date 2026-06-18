@@ -21,10 +21,10 @@ export const useAuthStore = create(
       loading: false,
       error: null,
 
-      login: async (accountNo, password) => {
+      login: async ({ accountNo, password, name, role }) => {
         set({ loading: true, error: null });
         try {
-          const response = await loginApi(accountNo, password);
+          const response = await loginApi({ accountNo, password, name, role });
           set({
             user: response.user,
             isAuthenticated: true,

@@ -7,15 +7,22 @@ import { API_ENDPOINTS } from 'shared/api/endpoints';
 
 /**
  * 登录
- * @param {string} accountNo - 学号或工号
- * @param {string} password - 密码
+ * @param {object} credentials
+ * @param {string} credentials.accountNo - 学号或工号
+ * @param {string} credentials.password - 密码
+ * @param {string} [credentials.name] - 姓名（首次登录建号）
+ * @param {string} [credentials.role] - 角色 STUDENT/TEACHER（首次登录建号）
  * @returns {Promise<{user: object, sessionToken: string}>}
  */
-export const login = async (accountNo, password) => {
-  return apiClient.post(API_ENDPOINTS.AUTH.LOGIN, {
-    accountNo,
-    password,
-  });
+export const login = async ({ accountNo, password, name, role }) => {
+  const payload = { accountNo, password };
+  if (name) {
+    payload.name = name;
+  }
+  if (role) {
+    payload.role = role;
+  }
+  return apiClient.post(API_ENDPOINTS.AUTH.LOGIN, payload);
 };
 
 /**
