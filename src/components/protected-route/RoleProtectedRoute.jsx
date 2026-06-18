@@ -9,7 +9,8 @@ import { ROUTES } from 'shared/constants/routes';
 import { Redirect } from 'shared/ui/Redirect';
 import { hasCookie, COOKIE_NAMES } from 'shared/utils/cookie';
 
-export const RoleProtectedRoute = ({ children, allowedRole }) => {
+export const RoleProtectedRoute = ({ children, allowedRole, allowedRoles }) => {
+  const roles = allowedRoles ?? (allowedRole ? [allowedRole] : []);
   const { isAuthenticated, user, clearAuth } = useAuthStore();
   const location = useLocation();
   const [isChecking, setIsChecking] = useState(true);
@@ -35,7 +36,7 @@ export const RoleProtectedRoute = ({ children, allowedRole }) => {
     );
   }
 
-  if (user?.role && user.role !== allowedRole) {
+  if (user?.role && roles.length > 0 && !roles.includes(user.role)) {
     return <Redirect to={getHomeRouteByRole(user.role)} replace />;
   }
 

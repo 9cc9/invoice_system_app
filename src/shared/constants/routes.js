@@ -7,7 +7,7 @@ export const ROUTES = {
   STUDENT_HOME: '/student/home',
   STUDENT_FORM_CREATE: '/student/forms/new',
   STUDENT_FORM_EDIT: (id) => `/student/forms/${id}/edit`,
-  TEACHER_HOME: '/teacher/home',
+  ADMIN_HOME: '/admin/home',
   HOME: '/',
 };
 

@@ -9,6 +9,8 @@ import { ReimbursementFormPage } from 'pages/ReimbursementFormPage';
 import { RootRedirect } from './RootRedirect';
 import { USER_ROLES } from 'entities/auth';
 
+const UPLOAD_ROLES = [USER_ROLES.STUDENT, USER_ROLES.TEACHER];
+
 export const routes = [
   {
     path: '/login',
@@ -21,28 +23,28 @@ export const routes = [
     name: 'StudentHome',
     component: StudentHomePage,
     protected: true,
-    role: USER_ROLES.STUDENT,
+    allowedRoles: UPLOAD_ROLES,
   },
   {
     path: '/student/forms/new',
     name: 'StudentFormCreate',
     component: ReimbursementFormPage,
     protected: true,
-    role: USER_ROLES.STUDENT,
+    allowedRoles: UPLOAD_ROLES,
   },
   {
     path: '/student/forms/:id/edit',
     name: 'StudentFormEdit',
     component: ReimbursementFormPage,
     protected: true,
-    role: USER_ROLES.STUDENT,
+    allowedRoles: UPLOAD_ROLES,
   },
   {
-    path: '/teacher/home',
-    name: 'TeacherHome',
+    path: '/admin/home',
+    name: 'AdminHome',
     component: TeacherHomePage,
     protected: true,
-    role: USER_ROLES.TEACHER,
+    allowedRoles: [USER_ROLES.ADMIN],
   },
   {
     path: '/',

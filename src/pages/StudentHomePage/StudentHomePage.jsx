@@ -24,7 +24,7 @@ const STATUS_COLOR = {
 };
 
 export const StudentHomePage = () => {
-  const { user, logout } = useAuthStore();
+  const { logout } = useAuthStore();
   const { t } = useTranslation(['common', 'auth', 'reimbursement']);
   const navigate = useNavigate();
   const [forms, setForms] = useState([]);
@@ -68,13 +68,7 @@ export const StudentHomePage = () => {
     <View style={styles.page}>
       <View style={styles.header}>
         <View>
-          <Text style={styles.title}>{t('auth:title.studentHome')}</Text>
-          <Text style={styles.subtitle}>
-            {t('auth:message.welcomeUser', {
-              name: user?.name,
-              accountNo: user?.accountNo,
-            })}
-          </Text>
+          <Text style={styles.title}>{t('auth:title.uploadHome')}</Text>
         </View>
         <View style={styles.headerActions}>
           <Button type="primary" icon={<PlusOutlined />} onClick={handleCreate}>

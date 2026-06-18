@@ -293,7 +293,7 @@ export const TeacherHomePage = () => {
     <View style={styles.page}>
       <View style={styles.header}>
         <View>
-          <Text style={styles.title}>{t('auth:title.teacherHome')}</Text>
+          <Text style={styles.title}>{t('auth:title.adminHome')}</Text>
           <Text style={styles.subtitle}>
             {t('auth:message.welcomeUser', {
               name: user?.name,

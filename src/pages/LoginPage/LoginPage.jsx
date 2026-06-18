@@ -1,5 +1,5 @@
 /**
- * 登录页（学生 / 老师分角色登录）
+ * 登录页（上传发票 / 处理发票）
  */
 
 import { useEffect, useState } from 'react';
@@ -10,7 +10,12 @@ import { Button } from 'shared/ui/Button';
 import { message } from 'shared/ui/Message';
 import { View } from 'shared/ui/View';
 import { Text } from 'shared/ui/Text';
-import { useAuthStore, USER_ROLES, getHomeRouteByRole } from 'entities/auth';
+import {
+  useAuthStore,
+  LOGIN_MODES,
+  getHomeRouteByRole,
+  canAccessLoginMode,
+} from 'entities/auth';
 import { POST_LOGIN_REDIRECT_KEY } from 'shared/constants/routes';
 import { useTranslation } from 'shared/hooks/useTranslation';
 import { LanguageSwitcher } from 'components/i18n';
@@ -21,7 +26,7 @@ export const LoginPage = () => {
   const location = useLocation();
   const { login, logout, isAuthenticated, user, loading, error } = useAuthStore();
   const { t } = useTranslation(['common', 'auth']);
-  const [selectedRole, setSelectedRole] = useState(USER_ROLES.STUDENT);
+  const [loginMode, setLoginMode] = useState(LOGIN_MODES.UPLOAD);
   const [form] = useForm();
 
   const getRedirectPath = (loggedInUser) => {
@@ -47,12 +52,8 @@ export const LoginPage = () => {
     }
   }, [isAuthenticated, user, navigate]);
 
-  useEffect(() => {
-    form.resetFields();
-  }, [selectedRole, form]);
-
-  const handleRoleSwitch = (role) => {
-    setSelectedRole(role);
+  const handleModeSwitch = (mode) => {
+    setLoginMode(mode);
   };
 
   const handleSubmit = async (values) => {
@@ -65,13 +66,13 @@ export const LoginPage = () => {
     }
 
     const loggedInRole = result.user?.role;
-    if (loggedInRole !== selectedRole) {
+    if (!canAccessLoginMode(loggedInRole, loginMode)) {
       await logout();
-      const roleMismatchMessage =
-        selectedRole === USER_ROLES.STUDENT
-          ? t('auth:error.studentRoleMismatch')
-          : t('auth:error.teacherRoleMismatch');
-      message.error(roleMismatchMessage);
+      const modeMismatchMessage =
+        loginMode === LOGIN_MODES.UPLOAD
+          ? t('auth:error.uploadRoleMismatch')
+          : t('auth:error.processRoleMismatch');
+      message.error(modeMismatchMessage);
       return;
     }
 
@@ -79,7 +80,7 @@ export const LoginPage = () => {
     navigate(getRedirectPath(result.user), { replace: true });
   };
 
-  const isStudent = selectedRole === USER_ROLES.STUDENT;
+  const isUploadMode = loginMode === LOGIN_MODES.UPLOAD;
 
   return (
     <View style={styles.loginPage}>
@@ -98,26 +99,26 @@ export const LoginPage = () => {
             type="button"
             style={{
               ...styles.roleTab,
-              ...(isStudent ? styles.roleTabActive : {}),
+              ...(isUploadMode ? styles.roleTabActive : {}),
             }}
-            onClick={() => handleRoleSwitch(USER_ROLES.STUDENT)}
+            onClick={() => handleModeSwitch(LOGIN_MODES.UPLOAD)}
           >
-            {t('auth:role.student')}
+            {t('auth:mode.upload')}
           </button>
           <button
             type="button"
             style={{
               ...styles.roleTab,
-              ...(!isStudent ? styles.roleTabActive : {}),
+              ...(!isUploadMode ? styles.roleTabActive : {}),
             }}
-            onClick={() => handleRoleSwitch(USER_ROLES.TEACHER)}
+            onClick={() => handleModeSwitch(LOGIN_MODES.PROCESS)}
           >
-            {t('auth:role.teacher')}
+            {t('auth:mode.process')}
           </button>
         </View>
 
         <Text style={styles.roleHint}>
-          {isStudent ? t('auth:message.studentLoginHint') : t('auth:message.teacherLoginHint')}
+          {isUploadMode ? t('auth:message.uploadLoginHint') : t('auth:message.processLoginHint')}
         </Text>
 
         <Form
@@ -130,18 +131,12 @@ export const LoginPage = () => {
         >
           <FormItem
             name="accountNo"
-            label={isStudent ? t('auth:form.studentAccountLabel') : t('auth:form.teacherAccountLabel')}
+            label={t('auth:form.accountLabel')}
             rules={[
               { required: true, message: t('auth:validation.accountRequired') },
             ]}
           >
-            <Input
-              placeholder={
-                isStudent
-                  ? t('auth:form.studentAccountPlaceholder')
-                  : t('auth:form.teacherAccountPlaceholder')
-              }
-            />
+            <Input placeholder={t('auth:form.accountPlaceholder')} />
           </FormItem>
 
           <FormItem
@@ -163,7 +158,7 @@ export const LoginPage = () => {
 
           <FormItem style={{ marginBottom: 0 }}>
             <Button type="primary" htmlType="submit" loading={loading} block>
-              {isStudent ? t('auth:button.studentLogin') : t('auth:button.teacherLogin')}
+              {isUploadMode ? t('auth:button.uploadLogin') : t('auth:button.processLogin')}
             </Button>
           </FormItem>
         </Form>

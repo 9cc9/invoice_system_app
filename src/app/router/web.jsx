@@ -13,9 +13,12 @@ export const WebRouter = () => {
         {routes.map((route) => {
           let element = <route.component />;
 
-          if (route.protected && route.role) {
+          if (route.protected && (route.allowedRoles || route.role)) {
             element = (
-              <RoleProtectedRoute allowedRole={route.role}>
+              <RoleProtectedRoute
+                allowedRole={route.role}
+                allowedRoles={route.allowedRoles}
+              >
                 <route.component />
               </RoleProtectedRoute>
             );
