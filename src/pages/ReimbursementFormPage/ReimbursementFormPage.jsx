@@ -4,8 +4,8 @@
 
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Select, InputNumber, Card, Checkbox, Modal, Image, Tooltip } from 'antd';
-import { PlusOutlined, DeleteOutlined, ArrowLeftOutlined, CheckCircleFilled, QuestionCircleOutlined } from '@ant-design/icons';
+import { Select, InputNumber, Card, Checkbox, Modal, Image } from 'antd';
+import { PlusOutlined, DeleteOutlined, ArrowLeftOutlined, CheckCircleFilled } from '@ant-design/icons';
 import { Form, FormItem, useForm } from 'shared/ui/Form';
 import { Input } from 'shared/ui/Input';
 import { Button } from 'shared/ui/Button';
@@ -20,8 +20,7 @@ import {
   updateReimbursementForm,
   submitReimbursementForm,
   getReimbursementForm,
-  fetchExpenseCategories,
-  fetchBusinessCategories,
+  fetchCategories,
 } from 'entities/reimbursement';
 import { FileUploadField } from 'components/reimbursement';
 import { ROUTES } from 'shared/constants/routes';
@@ -75,8 +74,11 @@ export const ReimbursementFormPage = () => {
   const [form] = useForm();
   const [loading, setLoading] = useState(false);
   const [pageLoading, setPageLoading] = useState(isEdit);
-  const [expenseOptions, setExpenseOptions] = useState([]);
-  const [businessOptions, setBusinessOptions] = useState([]);
+  const [categoryOptions, setCategoryOptions] = useState({
+    businessCategories: [],
+    expenseCategories: [],
+    linkage: {},
+  });
   const [formId, setFormId] = useState(id || null);
   const [autoAmountIndexes, setAutoAmountIndexes] = useState(() => new Set());
   const [explanationTemplateOpen, setExplanationTemplateOpen] = useState(false);
@@ -85,12 +87,12 @@ export const ReimbursementFormPage = () => {
   useEffect(() => {
     const loadOptions = async () => {
       try {
-        const [expense, business] = await Promise.all([
-          fetchExpenseCategories(),
-          fetchBusinessCategories(),
-        ]);
-        setExpenseOptions(expense || []);
-        setBusinessOptions(business || []);
+        const data = await fetchCategories();
+        setCategoryOptions({
+          businessCategories: data?.businessCategories || [],
+          expenseCategories: data?.expenseCategories || [],
+          linkage: data?.linkage || {},
+        });
       } catch (error) {
         message.error(error.message || t('reimbursement:message.loadOptionsFailed'));
       }
@@ -377,6 +379,14 @@ export const ReimbursementFormPage = () => {
     }
   };
 
+  const handleBusinessCategoryChange = (businessCategory) => {
+    const currentExpenseCategory = form.getFieldValue('expenseCategory');
+    const allowedCodes = categoryOptions.linkage[businessCategory] || [];
+    if (currentExpenseCategory && !allowedCodes.includes(currentExpenseCategory)) {
+      form.setFieldsValue({ expenseCategory: undefined });
+    }
+  };
+
   if (pageLoading) {
     return (
       <View style={styles.page}>
@@ -418,19 +428,36 @@ export const ReimbursementFormPage = () => {
           >
             <Select
               placeholder={t('reimbursement:form.businessCategoryPlaceholder')}
-              options={businessOptions.map((item) => ({ value: item.code, label: item.label }))}
+              options={categoryOptions.businessCategories.map((item) => ({ value: item.code, label: item.label }))}
+              onChange={handleBusinessCategoryChange}
             />
           </FormItem>
 
           <FormItem
-            name="expenseCategory"
-            label={t('reimbursement:form.expenseCategory')}
-            rules={[{ required: true, message: t('reimbursement:validation.expenseCategoryRequired') }]}
+            noStyle
+            shouldUpdate={(prev, cur) => prev.businessCategory !== cur.businessCategory}
           >
-            <Select
-              placeholder={t('reimbursement:form.expenseCategoryPlaceholder')}
-              options={expenseOptions.map((item) => ({ value: item.code, label: item.label }))}
-            />
+            {({ getFieldValue }) => {
+              const businessCategory = getFieldValue('businessCategory');
+              const allowedCodes = new Set(categoryOptions.linkage[businessCategory] || []);
+              const expenseCategoryOptions = categoryOptions.expenseCategories
+                .filter((item) => allowedCodes.has(item.code))
+                .map((item) => ({ value: item.code, label: item.label }));
+
+              return (
+                <FormItem
+                  name="expenseCategory"
+                  label={t('reimbursement:form.expenseCategory')}
+                  rules={[{ required: true, message: t('reimbursement:validation.expenseCategoryRequired') }]}
+                >
+                  <Select
+                    placeholder={t('reimbursement:form.expenseCategoryPlaceholder')}
+                    disabled={!businessCategory}
+                    options={expenseCategoryOptions}
+                  />
+                </FormItem>
+              );
+            }}
           </FormItem>
 
           <FormItem name="remark" label={t('reimbursement:form.remark')}>
@@ -630,9 +657,6 @@ export const ReimbursementFormPage = () => {
                                   >
                                     <View style={styles.checkboxLabel}>
                                       <Text>{t('reimbursement:item.hasVagueItemName')}</Text>
-                                      <Tooltip title={t('reimbursement:item.purchaseListTooltip')}>
-                                        <QuestionCircleOutlined style={styles.helpIcon} />
-                                      </Tooltip>
                                     </View>
                                   </Checkbox>
                                 </FormItem>

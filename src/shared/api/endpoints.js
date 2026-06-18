@@ -10,8 +10,7 @@ export const API_ENDPOINTS = {
     CHANGE_PASSWORD: '/profile/changePassword.json',
   },
   ENUMS: {
-    EXPENSE_CATEGORIES: '/enums/expenseCategories.json',
-    BUSINESS_CATEGORIES: '/enums/businessCategories.json',
+    CATEGORIES: '/enums/categories.json',
     FORM_STATUSES: '/enums/reimbursementFormStatuses.json',
   },
   REIMBURSEMENT_FORMS: {

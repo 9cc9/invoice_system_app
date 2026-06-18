@@ -7,11 +7,8 @@ import { API_ENDPOINTS } from 'shared/api/endpoints';
 import { getApiBaseUrl } from 'shared/constants/config';
 import { POST_LOGIN_REDIRECT_KEY } from 'shared/constants/routes';
 
-export const fetchExpenseCategories = () =>
-  apiClient.get(API_ENDPOINTS.ENUMS.EXPENSE_CATEGORIES);
-
-export const fetchBusinessCategories = () =>
-  apiClient.get(API_ENDPOINTS.ENUMS.BUSINESS_CATEGORIES);
+export const fetchCategories = () =>
+  apiClient.get(API_ENDPOINTS.ENUMS.CATEGORIES);
 
 export const fetchFormStatuses = () =>
   apiClient.get(API_ENDPOINTS.ENUMS.FORM_STATUSES);

@@ -12,7 +12,7 @@ import { Text } from 'shared/ui/Text';
 import { message } from 'shared/ui/Message';
 import { useAuthStore } from 'entities/auth';
 import {
-  fetchBusinessCategories,
+  fetchCategories,
   fetchFormStatuses,
   listReimbursementForms,
   batchDownloadReimbursementForms,
@@ -68,11 +68,12 @@ export const TeacherHomePage = () => {
   useEffect(() => {
     const loadOptions = async () => {
       try {
-        const [categories, statuses] = await Promise.all([
-          fetchBusinessCategories(),
+        const [categoryData, statuses] = await Promise.all([
+          fetchCategories(),
           fetchFormStatuses(),
         ]);
-        setBusinessCategories(categories || []);
+        const categories = categoryData?.businessCategories || [];
+        setBusinessCategories(categories);
         setFormStatuses((statuses || []).filter((item) => item.code !== 'DRAFT'));
         if (categories?.length) {
           setActiveTab(categories[0].code);

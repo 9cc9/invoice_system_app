@@ -1,6 +1,5 @@
 export {
-  fetchExpenseCategories,
-  fetchBusinessCategories,
+  fetchCategories,
   fetchFormStatuses,
   listReimbursementForms,
   batchDownloadReimbursementForms,

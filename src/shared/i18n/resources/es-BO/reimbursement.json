@@ -7,7 +7,7 @@
   "section": {
     "basicInfo": "Información Básica",
     "invoiceItems": "Facturas",
-    "invoiceRules": "(1) Si una factura es menor a ¥200, solo se requiere PDF de factura electrónica;\n(2) Si es ¥200 o más, ingrese manualmente el monto pagado según comprobantes y suba comprobantes de pago (pueden ser varios); si difiere del monto de factura, explique el motivo;\n(3) Si los nombres de ítems son vagos (p. ej. componentes, lote, set) o faltan nombres/cantidades, marque la casilla y suba lista de compra;\n(4) Si emisor y beneficiario difieren, marque la casilla y suba una explicación."
+    "invoiceRules": "(1) Si una factura es menor a ¥200, solo se requiere PDF de factura electrónica;\n(2) Si es ¥200 o más, ingrese manualmente el monto pagado según comprobantes y suba comprobantes de pago (pueden ser varios); si difiere del monto de factura, explique el motivo;\n(3) Si los nombres de ítems son genéricos (p. ej. componentes, lote, set) o faltan nombres/cantidades específicos, marque la casilla y suba una lista de compra oficial con sello; sin lista formal, puede subir capturas de pedidos de Taobao como respaldo;\n(4) Si emisor y beneficiario difieren, marque la casilla y suba una explicación."
   },
   "form": {
     "studentAccountNo": "Número de estudiante",
@@ -32,8 +32,7 @@
     "amountMismatchReasonPlaceholder": "Explique brevemente por qué el monto pagado difiere del monto de factura",
     "paymentRecord": "Comprobantes de pago",
     "paymentRecordHint": "Obligatorio si el monto es ¥200 o más (máx. 5 archivos)",
-    "hasVagueItemName": "Los ítems de factura son vagos (p. ej. componentes, lote, set) o sin nombres/cantidades específicos",
-    "purchaseListTooltip": "Sin lista formal, puede subir capturas de pedidos de Taobao como respaldo",
+    "hasVagueItemName": "Si los nombres de ítems son genéricos (p. ej. componentes, lote, set) o faltan nombres/cantidades específicos, debe proporcionar una lista de compra oficial con sello; sin lista formal, puede subir capturas de pedidos de Taobao como respaldo",
     "purchaseListFile": "Lista de compra",
     "issuerPayeeInconsistent": "Emisor y beneficiario no coinciden",
     "explanationFile": "Explicación",
