@@ -31,7 +31,7 @@
     "amountMismatchReason": "金额不一致原因",
     "amountMismatchReasonPlaceholder": "请用一句话说明支付金额与发票金额不一致的原因",
     "paymentRecord": "支付记录",
-    "paymentRecordHint": "金额 ≥ 200 元时必填，可上传多条（最多 5 个）",
+    "paymentRecordHint": "金额 ≥ 200 元时必填，可批量上传（最多 {{max}} 个）",
     "hasVagueItemName": "发票货物名称为元器件、批、套，或未标注具体品名、数量的，必须提供有盖章的正式购置清单；无正式购置清单的，可上传淘宝订单截图作为明细依据",
     "purchaseListFile": "购置清单",
     "issuerPayeeInconsistent": "开票方与收款方信息不一致",
@@ -119,6 +119,7 @@
     "submittedReadonly": "已提交的报销单不可编辑",
     "uploadSuccess": "文件上传成功",
     "uploadFailed": "文件上传失败",
+    "uploadMaxCountExceeded": "最多只能上传 {{max}} 个文件",
     "invoiceAmountRecognized": "已自动识别发票金额",
     "invoiceAmountNotRecognized": "未能识别发票金额：请上传含税务二维码的增值税发票（支付记录/截图无法识别），或手动填写"
   }

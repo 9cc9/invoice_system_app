@@ -2,6 +2,7 @@
  * 发票文件上传字段
  */
 
+import { useRef } from 'react';
 import { Upload } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 import { Button } from 'shared/ui/Button';
@@ -32,6 +33,9 @@ export const FileUploadField = ({
 }) => {
   const { t } = useTranslation(['reimbursement']);
   const fileUrls = normalizeValue(value, multiple);
+  const valueRef = useRef(fileUrls);
+  valueRef.current = fileUrls;
+  const uploadQueueRef = useRef(Promise.resolve());
 
   const fileList = (multiple ? fileUrls : (fileUrls ? [fileUrls] : [])).map((url, index) => ({
     uid: `${url}-${index}`,
@@ -48,35 +52,69 @@ export const FileUploadField = ({
     onChange?.(nextValue);
   };
 
+  const enqueueUpload = (task) => {
+    const next = uploadQueueRef.current.then(task);
+    uploadQueueRef.current = next.catch(() => {});
+    return next;
+  };
+
+  const handleBeforeUpload = (file, batchFileList) => {
+    if (!multiple) {
+      return true;
+    }
+    const remaining = maxCount - valueRef.current.length;
+    const batchIndex = batchFileList.indexOf(file);
+    if (remaining <= 0) {
+      if (batchIndex === 0) {
+        message.error(t('reimbursement:message.uploadMaxCountExceeded', { max: maxCount }));
+      }
+      return Upload.LIST_IGNORE;
+    }
+    if (batchIndex >= remaining) {
+      if (batchIndex === remaining) {
+        message.error(t('reimbursement:message.uploadMaxCountExceeded', { max: maxCount }));
+      }
+      return Upload.LIST_IGNORE;
+    }
+    return true;
+  };
+
   return (
     <Upload
       accept={accept}
       multiple={multiple}
       maxCount={maxCount}
       fileList={fileList}
-      customRequest={async ({ file, onSuccess, onError }) => {
-        try {
-          const uploadItemId = multiple
-            ? `${itemId}-${fileUrls.length + 1}`
-            : itemId;
-          const result = await uploadFile(file, { formId, itemId: uploadItemId, fileType });
-          if (!multiple) {
-            onUploadResult?.(result);
+      beforeUpload={handleBeforeUpload}
+      customRequest={({ file, onSuccess, onError }) => {
+        enqueueUpload(async () => {
+          try {
+            const uploadItemId = multiple ? `${itemId}-${file.uid}` : itemId;
+            const result = await uploadFile(file, { formId, itemId: uploadItemId, fileType });
+            if (!multiple) {
+              onUploadResult?.(result);
+            }
+            const currentUrls = multiple ? [...valueRef.current] : undefined;
+            const nextValue = multiple
+              ? [...currentUrls, result.fileUrl]
+              : result.fileUrl;
+            if (multiple) {
+              valueRef.current = nextValue;
+            }
+            emitChange(nextValue);
+            onSuccess?.(result);
+            message.success(t('reimbursement:message.uploadSuccess'));
+          } catch (error) {
+            message.error(error.message || t('reimbursement:message.uploadFailed'));
+            onError?.(error);
+            throw error;
           }
-          const nextValue = multiple
-            ? [...fileUrls, result.fileUrl]
-            : result.fileUrl;
-          emitChange(nextValue);
-          onSuccess?.(result);
-          message.success(t('reimbursement:message.uploadSuccess'));
-        } catch (error) {
-          message.error(error.message || t('reimbursement:message.uploadFailed'));
-          onError?.(error);
-        }
+        });
       }}
       onRemove={(file) => {
         if (multiple) {
           const nextValue = fileUrls.filter((url) => url !== file.url);
+          valueRef.current = nextValue;
           emitChange(nextValue);
         } else {
           onChange?.(undefined);

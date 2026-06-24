@@ -31,7 +31,7 @@
     "amountMismatchReason": "Reason for Amount Difference",
     "amountMismatchReasonPlaceholder": "Briefly explain why payment amount differs from invoice amount",
     "paymentRecord": "Payment Records",
-    "paymentRecordHint": "Required when amount is ¥200 or more (up to 5 files)",
+    "paymentRecordHint": "Required when amount is ¥200 or more (batch upload, up to {{max}} files)",
     "hasVagueItemName": "If invoice item names are generic (e.g. components, batch, set) or lack specific names/quantities, a stamped official purchase list is required; if unavailable, Taobao order screenshots may be uploaded as supporting detail",
     "purchaseListFile": "Purchase List",
     "issuerPayeeInconsistent": "Issuer and payee information differ",
@@ -119,6 +119,7 @@
     "submittedReadonly": "Submitted forms are read-only",
     "uploadSuccess": "File uploaded",
     "uploadFailed": "File upload failed",
+    "uploadMaxCountExceeded": "You can upload up to {{max}} files",
     "invoiceAmountRecognized": "Invoice amount detected automatically",
     "invoiceAmountNotRecognized": "Could not detect invoice amount, please enter manually"
   }

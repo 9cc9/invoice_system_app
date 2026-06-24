@@ -31,7 +31,7 @@
     "amountMismatchReason": "Motivo de diferencia de monto",
     "amountMismatchReasonPlaceholder": "Explique brevemente por qué el monto pagado difiere del monto de factura",
     "paymentRecord": "Comprobantes de pago",
-    "paymentRecordHint": "Obligatorio si el monto es ¥200 o más (máx. 5 archivos)",
+    "paymentRecordHint": "Obligatorio si el monto es ¥200 o más (subida por lotes, máx. {{max}} archivos)",
     "hasVagueItemName": "Si los nombres de ítems son genéricos (p. ej. componentes, lote, set) o faltan nombres/cantidades específicos, debe proporcionar una lista de compra oficial con sello; sin lista formal, puede subir capturas de pedidos de Taobao como respaldo",
     "purchaseListFile": "Lista de compra",
     "issuerPayeeInconsistent": "Emisor y beneficiario no coinciden",
@@ -119,6 +119,7 @@
     "submittedReadonly": "Los formularios enviados son de solo lectura",
     "uploadSuccess": "Archivo subido",
     "uploadFailed": "Error al subir archivo",
+    "uploadMaxCountExceeded": "Solo puede subir hasta {{max}} archivos",
     "invoiceAmountRecognized": "Monto de factura detectado automáticamente",
     "invoiceAmountNotRecognized": "No se detectó el monto, ingréselo manualmente"
   }

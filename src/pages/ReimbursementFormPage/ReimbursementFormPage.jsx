@@ -30,6 +30,7 @@ import { styles } from './ReimbursementFormPage.styles';
 const { TextArea } = Input;
 
 const PAYMENT_RECORD_THRESHOLD = 200;
+const PAYMENT_RECORD_MAX_COUNT = 20;
 const EXPLANATION_TEMPLATE_URL = '/images/explanation-template.png';
 
 const requiresPaymentRecord = (amount) => {
@@ -156,6 +157,14 @@ export const ReimbursementFormPage = () => {
     return created;
   };
 
+  const showValidationErrors = (errorFields) => {
+    const firstError = errorFields?.[0];
+    if (firstError?.name) {
+      form.scrollToField(firstError.name, { block: 'center' });
+    }
+    message.error(firstError?.errors?.[0] || t('reimbursement:message.validationFailed'));
+  };
+
   const handleSaveDraft = async () => {
     try {
       const values = await form.validateFields();
@@ -164,7 +173,7 @@ export const ReimbursementFormPage = () => {
       setDraftSavedModalOpen(true);
     } catch (error) {
       if (error?.errorFields) {
-        message.error(t('reimbursement:message.validationFailed'));
+        showValidationErrors(error.errorFields);
         return;
       }
       message.error(error.message || t('reimbursement:message.saveFailed'));
@@ -285,6 +294,7 @@ export const ReimbursementFormPage = () => {
         : item
     ));
     form.setFieldsValue({ items: nextItems });
+    form.setFields([{ name: ['items', itemIndex, 'explanationFileUrl'], errors: [] }]);
   };
 
   const handleHasVagueItemNameChange = (itemIndex, checked) => {
@@ -298,6 +308,7 @@ export const ReimbursementFormPage = () => {
         : item
     ));
     form.setFieldsValue({ items: nextItems });
+    form.setFields([{ name: ['items', itemIndex, 'purchaseListFileUrl'], errors: [] }]);
   };
 
   const handleRemoveItem = (remove, fieldName, index) => {
@@ -316,51 +327,6 @@ export const ReimbursementFormPage = () => {
   };
 
   const handleSubmit = async (values) => {
-    if (!values.items || values.items.length === 0) {
-      message.error(t('reimbursement:validation.itemsRequired'));
-      return;
-    }
-
-    for (let index = 0; index < values.items.length; index += 1) {
-      const item = values.items[index];
-      if (requiresPaymentRecord(item.invoiceAmount)) {
-        if (item.actualPaidAmount == null || item.actualPaidAmount === '') {
-          message.error(
-            t('reimbursement:validation.actualPaidAmountRequiredWithIndex', { index: index + 1 }),
-          );
-          return;
-        }
-        if (!amountsEqual(item.invoiceAmount, item.actualPaidAmount)) {
-          const reason = (item.amountMismatchReason || '').trim();
-          if (!reason) {
-            message.error(
-              t('reimbursement:validation.amountMismatchReasonRequiredWithIndex', { index: index + 1 }),
-            );
-            return;
-          }
-        }
-        const paymentCount = (item.paymentRecordUrls || []).filter(Boolean).length;
-        if (paymentCount === 0) {
-          message.error(
-            t('reimbursement:validation.paymentRecordRequiredWithIndex', { index: index + 1 }),
-          );
-          return;
-        }
-        if (item.issuerPayeeInconsistent && !item.explanationFileUrl) {
-          message.error(
-            t('reimbursement:validation.explanationRequiredWithIndex', { index: index + 1 }),
-          );
-          return;
-        }
-        if (item.hasVagueItemName && !item.purchaseListFileUrl) {
-          message.error(
-            t('reimbursement:validation.purchaseListRequiredWithIndex', { index: index + 1 }),
-          );
-          return;
-        }
-      }
-    }
-
     try {
       setLoading(true);
       const saved = await persistForm(values);
@@ -370,7 +336,7 @@ export const ReimbursementFormPage = () => {
       navigate(ROUTES.STUDENT_HOME, { replace: true });
     } catch (error) {
       if (error?.errorFields) {
-        message.error(t('reimbursement:message.validationFailed'));
+        showValidationErrors(error.errorFields);
         return;
       }
       message.error(error.message || t('reimbursement:message.submitFailed'));
@@ -622,6 +588,36 @@ export const ReimbursementFormPage = () => {
                                     {...restField}
                                     name={[field.name, 'amountMismatchReason']}
                                     label={t('reimbursement:item.amountMismatchReason')}
+                                    dependencies={[
+                                      ['items', field.name, 'invoiceAmount'],
+                                      ['items', field.name, 'actualPaidAmount'],
+                                    ]}
+                                    rules={[
+                                      {
+                                        validator: async (_, value) => {
+                                          const invoiceAmount = form.getFieldValue([
+                                            'items',
+                                            field.name,
+                                            'invoiceAmount',
+                                          ]);
+                                          const actualPaidAmount = form.getFieldValue([
+                                            'items',
+                                            field.name,
+                                            'actualPaidAmount',
+                                          ]);
+                                          if (
+                                            requiresPaymentRecord(invoiceAmount)
+                                            && !amountsEqual(invoiceAmount, actualPaidAmount)
+                                            && !(value || '').trim()
+                                          ) {
+                                            return Promise.reject(
+                                              new Error(t('reimbursement:validation.amountMismatchReasonRequired')),
+                                            );
+                                          }
+                                          return Promise.resolve();
+                                        },
+                                      },
+                                    ]}
                                   >
                                     <Input
                                       placeholder={t('reimbursement:item.amountMismatchReasonPlaceholder')}
@@ -634,14 +630,36 @@ export const ReimbursementFormPage = () => {
                                   {...restField}
                                   name={[field.name, 'paymentRecordUrls']}
                                   label={t('reimbursement:item.paymentRecord')}
-                                  extra={t('reimbursement:item.paymentRecordHint')}
+                                  extra={t('reimbursement:item.paymentRecordHint', { max: PAYMENT_RECORD_MAX_COUNT })}
+                                  dependencies={[['items', field.name, 'invoiceAmount']]}
+                                  rules={[
+                                    {
+                                      validator: async (_, value) => {
+                                        const invoiceAmount = form.getFieldValue([
+                                          'items',
+                                          field.name,
+                                          'invoiceAmount',
+                                        ]);
+                                        if (requiresPaymentRecord(invoiceAmount)) {
+                                          const paymentCount = (value || []).filter(Boolean).length;
+                                          if (paymentCount === 0) {
+                                            return Promise.reject(
+                                              new Error(t('reimbursement:validation.paymentRecordRequired')),
+                                            );
+                                          }
+                                        }
+                                        return Promise.resolve();
+                                      },
+                                    },
+                                  ]}
                                 >
                                   <FileUploadField
                                     fileType="payment"
                                     formId={formId}
                                     itemId={`item-${index}-payment`}
                                     multiple
-                                    maxCount={5}
+                                    maxCount={PAYMENT_RECORD_MAX_COUNT}
+                                    required
                                   />
                                 </FormItem>
 
@@ -666,11 +684,30 @@ export const ReimbursementFormPage = () => {
                                     {...restField}
                                     name={[field.name, 'purchaseListFileUrl']}
                                     label={t('reimbursement:item.purchaseListFile')}
+                                    dependencies={[['items', field.name, 'hasVagueItemName']]}
+                                    rules={[
+                                      {
+                                        validator: async (_, value) => {
+                                          const vagueItemName = form.getFieldValue([
+                                            'items',
+                                            field.name,
+                                            'hasVagueItemName',
+                                          ]);
+                                          if (vagueItemName && !value) {
+                                            return Promise.reject(
+                                              new Error(t('reimbursement:validation.purchaseListRequired')),
+                                            );
+                                          }
+                                          return Promise.resolve();
+                                        },
+                                      },
+                                    ]}
                                   >
                                     <FileUploadField
                                       fileType="purchaseList"
                                       formId={formId}
                                       itemId={`item-${index}-purchase-list`}
+                                      required
                                     />
                                   </FormItem>
                                 )}
@@ -705,11 +742,30 @@ export const ReimbursementFormPage = () => {
                                         </Button>
                                       </View>
                                     )}
+                                    dependencies={[['items', field.name, 'issuerPayeeInconsistent']]}
+                                    rules={[
+                                      {
+                                        validator: async (_, value) => {
+                                          const inconsistent = form.getFieldValue([
+                                            'items',
+                                            field.name,
+                                            'issuerPayeeInconsistent',
+                                          ]);
+                                          if (inconsistent && !value) {
+                                            return Promise.reject(
+                                              new Error(t('reimbursement:validation.explanationRequired')),
+                                            );
+                                          }
+                                          return Promise.resolve();
+                                        },
+                                      },
+                                    ]}
                                   >
                                     <FileUploadField
                                       fileType="explanation"
                                       formId={formId}
                                       itemId={`item-${index}-explain`}
+                                      required
                                     />
                                   </FormItem>
                                 )}
