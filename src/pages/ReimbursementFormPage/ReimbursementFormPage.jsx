@@ -21,6 +21,7 @@ import {
   submitReimbursementForm,
   getReimbursementForm,
   fetchCategories,
+  requiresPaymentRecord,
 } from 'entities/reimbursement';
 import { FileUploadField } from 'components/reimbursement';
 import { ROUTES } from 'shared/constants/routes';
@@ -29,14 +30,19 @@ import { styles } from './ReimbursementFormPage.styles';
 
 const { TextArea } = Input;
 
-const PAYMENT_RECORD_THRESHOLD = 200;
 const PAYMENT_RECORD_MAX_COUNT = 20;
 const EXPLANATION_TEMPLATE_URL = '/images/explanation-template.png';
 
-const requiresPaymentRecord = (amount) => {
-  const num = Number(amount);
-  return Number.isFinite(num) && num >= PAYMENT_RECORD_THRESHOLD;
-};
+const clearPaymentRecordFields = (item) => ({
+  ...item,
+  actualPaidAmount: undefined,
+  amountMismatchReason: '',
+  paymentRecordUrls: [],
+  hasVagueItemName: false,
+  purchaseListFileUrl: '',
+  issuerPayeeInconsistent: false,
+  explanationFileUrl: '',
+});
 
 const parseInvoiceAmount = (value) => {
   if (value == null || value === '') {
@@ -129,6 +135,7 @@ export const ReimbursementFormPage = () => {
             actualPaidAmount: item.actualPaidAmount,
             amountMismatchReason: item.amountMismatchReason || '',
             paymentRecordUrls: item.paymentRecordUrls || [],
+            officialTransferInvoice: Boolean(item.officialTransferInvoice),
             hasVagueItemName: Boolean(item.hasVagueItemName),
             purchaseListFileUrl: item.purchaseListFileUrl || '',
             explanationFileUrl: item.explanationFileUrl || '',
@@ -215,14 +222,8 @@ export const ReimbursementFormPage = () => {
       }
       if (amount != null) {
         nextItem.invoiceAmount = amount;
-        if (!requiresPaymentRecord(amount)) {
-          nextItem.actualPaidAmount = undefined;
-          nextItem.amountMismatchReason = '';
-          nextItem.paymentRecordUrls = [];
-          nextItem.hasVagueItemName = false;
-          nextItem.purchaseListFileUrl = '';
-          nextItem.issuerPayeeInconsistent = false;
-          nextItem.explanationFileUrl = '';
+        if (!requiresPaymentRecord(amount, item.officialTransferInvoice)) {
+          return clearPaymentRecordFields(nextItem);
         }
       }
       return nextItem;
@@ -250,18 +251,12 @@ export const ReimbursementFormPage = () => {
         return item;
       }
       const nextItem = { ...item };
-      if (requiresPaymentRecord(value)) {
+      if (requiresPaymentRecord(value, item.officialTransferInvoice)) {
         if (amountsEqual(value, item.actualPaidAmount)) {
           nextItem.amountMismatchReason = '';
         }
       } else {
-        nextItem.actualPaidAmount = undefined;
-        nextItem.amountMismatchReason = '';
-        nextItem.paymentRecordUrls = [];
-        nextItem.hasVagueItemName = false;
-        nextItem.purchaseListFileUrl = '';
-        nextItem.issuerPayeeInconsistent = false;
-        nextItem.explanationFileUrl = '';
+        return clearPaymentRecordFields(nextItem);
       }
       return nextItem;
     });
@@ -277,6 +272,21 @@ export const ReimbursementFormPage = () => {
       const nextItem = { ...item, actualPaidAmount: value };
       if (amountsEqual(item.invoiceAmount, value)) {
         nextItem.amountMismatchReason = '';
+      }
+      return nextItem;
+    });
+    form.setFieldsValue({ items: nextItems });
+  };
+
+  const handleOfficialTransferInvoiceChange = (itemIndex, checked) => {
+    const items = form.getFieldValue('items') || [];
+    const nextItems = items.map((item, index) => {
+      if (index !== itemIndex) {
+        return item;
+      }
+      const nextItem = { ...item, officialTransferInvoice: checked };
+      if (checked) {
+        return clearPaymentRecordFields(nextItem);
       }
       return nextItem;
     });
@@ -536,16 +546,27 @@ export const ReimbursementFormPage = () => {
                         const curFlag = cur.items?.[field.name]?.issuerPayeeInconsistent;
                         const prevVague = prev.items?.[field.name]?.hasVagueItemName;
                         const curVague = cur.items?.[field.name]?.hasVagueItemName;
+                        const prevOfficialTransfer = prev.items?.[field.name]?.officialTransferInvoice;
+                        const curOfficialTransfer = cur.items?.[field.name]?.officialTransferInvoice;
                         return prevAmount !== curAmount
                           || prevPaid !== curPaid
                           || prevFlag !== curFlag
-                          || prevVague !== curVague;
+                          || prevVague !== curVague
+                          || prevOfficialTransfer !== curOfficialTransfer;
                       }}
                     >
                       {({ getFieldValue }) => {
                         const invoiceAmount = getFieldValue(['items', field.name, 'invoiceAmount']);
                         const actualPaidAmount = getFieldValue(['items', field.name, 'actualPaidAmount']);
-                        const needsPaymentRecord = requiresPaymentRecord(invoiceAmount);
+                        const officialTransferInvoice = getFieldValue([
+                          'items',
+                          field.name,
+                          'officialTransferInvoice',
+                        ]);
+                        const needsPaymentRecord = requiresPaymentRecord(
+                          invoiceAmount,
+                          officialTransferInvoice,
+                        );
                         const amountsMatch = amountsEqual(invoiceAmount, actualPaidAmount);
                         const issuerPayeeInconsistent = getFieldValue([
                           'items',
@@ -560,6 +581,20 @@ export const ReimbursementFormPage = () => {
 
                         return (
                           <>
+                            <FormItem
+                              {...restField}
+                              name={[field.name, 'officialTransferInvoice']}
+                              valuePropName="checked"
+                            >
+                              <Checkbox
+                                onChange={(event) => (
+                                  handleOfficialTransferInvoiceChange(index, event.target.checked)
+                                )}
+                              >
+                                {t('reimbursement:item.officialTransferInvoice')}
+                              </Checkbox>
+                            </FormItem>
+
                             {needsPaymentRecord && (
                               <>
                                 <FormItem
@@ -591,6 +626,7 @@ export const ReimbursementFormPage = () => {
                                     dependencies={[
                                       ['items', field.name, 'invoiceAmount'],
                                       ['items', field.name, 'actualPaidAmount'],
+                                      ['items', field.name, 'officialTransferInvoice'],
                                     ]}
                                     rules={[
                                       {
@@ -605,8 +641,13 @@ export const ReimbursementFormPage = () => {
                                             field.name,
                                             'actualPaidAmount',
                                           ]);
+                                          const officialTransfer = form.getFieldValue([
+                                            'items',
+                                            field.name,
+                                            'officialTransferInvoice',
+                                          ]);
                                           if (
-                                            requiresPaymentRecord(invoiceAmount)
+                                            requiresPaymentRecord(invoiceAmount, officialTransfer)
                                             && !amountsEqual(invoiceAmount, actualPaidAmount)
                                             && !(value || '').trim()
                                           ) {
@@ -631,16 +672,24 @@ export const ReimbursementFormPage = () => {
                                   name={[field.name, 'paymentRecordUrls']}
                                   label={t('reimbursement:item.paymentRecord')}
                                   extra={t('reimbursement:item.paymentRecordHint', { max: PAYMENT_RECORD_MAX_COUNT })}
-                                  dependencies={[['items', field.name, 'invoiceAmount']]}
-                                  rules={[
-                                    {
-                                      validator: async (_, value) => {
-                                        const invoiceAmount = form.getFieldValue([
-                                          'items',
-                                          field.name,
-                                          'invoiceAmount',
-                                        ]);
-                                        if (requiresPaymentRecord(invoiceAmount)) {
+                                    dependencies={[
+                                      ['items', field.name, 'invoiceAmount'],
+                                      ['items', field.name, 'officialTransferInvoice'],
+                                    ]}
+                                    rules={[
+                                      {
+                                        validator: async (_, value) => {
+                                          const invoiceAmount = form.getFieldValue([
+                                            'items',
+                                            field.name,
+                                            'invoiceAmount',
+                                          ]);
+                                          const officialTransfer = form.getFieldValue([
+                                            'items',
+                                            field.name,
+                                            'officialTransferInvoice',
+                                          ]);
+                                          if (requiresPaymentRecord(invoiceAmount, officialTransfer)) {
                                           const paymentCount = (value || []).filter(Boolean).length;
                                           if (paymentCount === 0) {
                                             return Promise.reject(

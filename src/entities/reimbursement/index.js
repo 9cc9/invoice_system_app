@@ -13,7 +13,10 @@ export {
 
 const PAYMENT_RECORD_THRESHOLD = 200;
 
-const requiresPaymentRecord = (amount) => {
+export const requiresPaymentRecord = (amount, officialTransferInvoice = false) => {
+  if (officialTransferInvoice) {
+    return false;
+  }
   const num = Number(amount);
   return Number.isFinite(num) && num >= PAYMENT_RECORD_THRESHOLD;
 };
@@ -25,6 +28,7 @@ export const createEmptyInvoiceItem = () => ({
   actualPaidAmount: undefined,
   amountMismatchReason: '',
   paymentRecordUrls: [],
+  officialTransferInvoice: false,
   hasVagueItemName: false,
   purchaseListFileUrl: '',
   explanationFileUrl: '',
@@ -45,11 +49,15 @@ export const buildFormPayload = (values) => ({
   businessCategory: values.businessCategory,
   remark: values.remark || '',
   items: (values.items || []).map((item) => {
-    const needsPaymentRecord = requiresPaymentRecord(item.invoiceAmount);
+    const needsPaymentRecord = requiresPaymentRecord(
+      item.invoiceAmount,
+      item.officialTransferInvoice,
+    );
     return {
       invoiceName: item.invoiceName,
       invoiceFileUrl: item.invoiceFileUrl,
       invoiceAmount: item.invoiceAmount,
+      officialTransferInvoice: Boolean(item.officialTransferInvoice),
       actualPaidAmount: needsPaymentRecord ? item.actualPaidAmount : null,
       amountMismatchReason: needsPaymentRecord && !amountsEqual(item.invoiceAmount, item.actualPaidAmount)
         ? (item.amountMismatchReason || '').trim() || null

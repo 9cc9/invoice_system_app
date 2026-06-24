@@ -7,7 +7,7 @@
   "section": {
     "basicInfo": "Basic Information",
     "invoiceItems": "Invoice Items",
-    "invoiceRules": "(1) For a single invoice under ¥200, only an e-invoice PDF is required;\n(2) For ¥200 or more, manually enter actual payment amount based on payment records and upload payment records (multiple allowed); if it differs from the invoice amount, explain why;\n(3) If invoice item names are generic (e.g. components, batch, set) or lack specific names/quantities, check the box and upload a stamped official purchase list; if unavailable, Taobao order screenshots may be uploaded as supporting detail;\n(4) If the issuer and payee differ, check the box and upload an explanation."
+    "invoiceRules": "(1) For a single invoice under ¥200, or official transfer invoices, only an e-invoice PDF is required;\n(2) For ¥200 or more and not official transfer, manually enter actual payment amount based on payment records and upload payment records (batch upload supported); if it differs from the invoice amount, explain why;\n(3) If invoice item names are generic (e.g. components, batch, set) or lack specific names/quantities, check the box and upload a stamped official purchase list; if unavailable, Taobao order screenshots may be uploaded as supporting detail;\n(4) If the issuer and payee differ, check the box and upload an explanation."
   },
   "form": {
     "studentAccountNo": "Student ID",
@@ -31,7 +31,8 @@
     "amountMismatchReason": "Reason for Amount Difference",
     "amountMismatchReasonPlaceholder": "Briefly explain why payment amount differs from invoice amount",
     "paymentRecord": "Payment Records",
-    "paymentRecordHint": "Required when amount is ¥200 or more (batch upload, up to {{max}} files)",
+    "paymentRecordHint": "Required when amount is ¥200 or more and not official transfer (batch upload, up to {{max}} files)",
+    "officialTransferInvoice": "Official transfer invoice",
     "hasVagueItemName": "If invoice item names are generic (e.g. components, batch, set) or lack specific names/quantities, a stamped official purchase list is required; if unavailable, Taobao order screenshots may be uploaded as supporting detail",
     "purchaseListFile": "Purchase List",
     "issuerPayeeInconsistent": "Issuer and payee information differ",
@@ -97,7 +98,7 @@
     "actualPaidAmountRequiredWithIndex": "Invoice {{index}}: please enter actual payment amount",
     "amountMismatchReasonRequired": "Reason is required when payment amount differs from invoice amount",
     "amountMismatchReasonRequiredWithIndex": "Invoice {{index}}: reason is required when amounts differ",
-    "paymentRecordRequired": "Payment records are required when amount is ¥200 or more",
+    "paymentRecordRequired": "Payment records are required when amount is ¥200 or more and not official transfer",
     "paymentRecordRequiredWithIndex": "Invoice {{index}}: payment records are required when amount is ¥200 or more",
     "explanationRequired": "Explanation is required when issuer and payee information differ",
     "explanationRequiredWithIndex": "Invoice {{index}}: explanation is required when issuer and payee information differ",
