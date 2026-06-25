@@ -2,7 +2,8 @@
   "title": {
     "createForm": "Nuevo Formulario",
     "editForm": "Editar Formulario",
-    "myForms": "Mis Formularios"
+    "myForms": "Mis Formularios",
+    "formDetail": "Detalle del Formulario"
   },
   "section": {
     "basicInfo": "Información Básica",
@@ -44,6 +45,14 @@
     "itemCount": "{{count}} factura(s)",
     "totalAmount": "Total ¥{{amount}}"
   },
+  "detail": {
+    "studentName": "Nombre",
+    "submittedAt": "Fecha de envío",
+    "createdAt": "Fecha de creación",
+    "totalActualPaidAmount": "Total pagado real",
+    "yes": "Sí",
+    "no": "No"
+  },
   "teacher": {
     "column": {
       "studentName": "Nombre",
@@ -78,6 +87,8 @@
     "saveDraft": "Guardar borrador",
     "submitForm": "Enviar formulario",
     "backToList": "Volver a la lista",
+    "viewDetail": "Detalle",
+    "editDraft": "Editar borrador",
     "uploadRequired": "Subir archivo",
     "uploadOptional": "Subir archivo (opcional)"
   },

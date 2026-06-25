@@ -2,7 +2,8 @@
   "title": {
     "createForm": "New Reimbursement Form",
     "editForm": "Edit Reimbursement Form",
-    "myForms": "My Reimbursement Forms"
+    "myForms": "My Reimbursement Forms",
+    "formDetail": "Reimbursement Form Details"
   },
   "section": {
     "basicInfo": "Basic Information",
@@ -44,6 +45,14 @@
     "itemCount": "{{count}} invoice(s)",
     "totalAmount": "Total ¥{{amount}}"
   },
+  "detail": {
+    "studentName": "Name",
+    "submittedAt": "Submitted At",
+    "createdAt": "Created At",
+    "totalActualPaidAmount": "Total Actual Payment",
+    "yes": "Yes",
+    "no": "No"
+  },
   "teacher": {
     "column": {
       "studentName": "Name",
@@ -78,6 +87,8 @@
     "saveDraft": "Save Draft",
     "submitForm": "Submit Form",
     "backToList": "Back to List",
+    "viewDetail": "Details",
+    "editDraft": "Edit Draft",
     "uploadRequired": "Upload File",
     "uploadOptional": "Upload File (optional)"
   },

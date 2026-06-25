@@ -5,7 +5,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Tabs, Table, Tag, Input, Select, Empty } from 'antd';
-import { DownloadOutlined } from '@ant-design/icons';
+import { DownloadOutlined, EyeOutlined } from '@ant-design/icons';
 import { Button } from 'shared/ui/Button';
 import { View } from 'shared/ui/View';
 import { Text } from 'shared/ui/Text';
@@ -200,21 +200,30 @@ export const TeacherHomePage = () => {
       {
         title: t('reimbursement:teacher.column.actions'),
         key: 'actions',
-        width: 100,
+        width: 160,
         fixed: 'right',
         render: (_, record) => (
-          <Button
-            type="link"
-            icon={<DownloadOutlined />}
-            disabled={!DOWNLOADABLE_STATUSES.has(record.status) || downloading}
-            onClick={() => handleDownload([record.id], [record])}
-          >
-            {t('reimbursement:teacher.button.download')}
-          </Button>
+          <View style={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
+            <Button
+              type="link"
+              icon={<EyeOutlined />}
+              onClick={() => navigate(ROUTES.ADMIN_FORM_DETAIL(record.id))}
+            >
+              {t('reimbursement:button.viewDetail')}
+            </Button>
+            <Button
+              type="link"
+              icon={<DownloadOutlined />}
+              disabled={!DOWNLOADABLE_STATUSES.has(record.status) || downloading}
+              onClick={() => handleDownload([record.id], [record])}
+            >
+              {t('reimbursement:teacher.button.download')}
+            </Button>
+          </View>
         ),
       },
     ],
-    [downloading, t],
+    [downloading, navigate, t],
   );
 
   const tabItems = businessCategories.map((category) => ({
@@ -290,7 +299,7 @@ export const TeacherHomePage = () => {
                 disabled: !DOWNLOADABLE_STATUSES.has(record.status),
               }),
             }}
-            scroll={{ x: 1120 }}
+            scroll={{ x: 1180 }}
           />
         </View>
       </View>

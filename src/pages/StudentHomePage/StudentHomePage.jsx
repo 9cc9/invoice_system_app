@@ -61,7 +61,7 @@ export const StudentHomePage = () => {
       navigate(ROUTES.STUDENT_FORM_EDIT(form.id));
       return;
     }
-    message.info(t('reimbursement:message.submittedReadonly'));
+    navigate(ROUTES.STUDENT_FORM_DETAIL(form.id));
   };
 
   return (
