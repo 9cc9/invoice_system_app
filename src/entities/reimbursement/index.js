@@ -68,8 +68,8 @@ export const buildFormPayload = (values) => ({
       explanationFileUrl: needsPaymentRecord && item.issuerPayeeInconsistent
         ? (item.explanationFileUrl || null)
         : null,
-      hasVagueItemName: needsPaymentRecord ? Boolean(item.hasVagueItemName) : false,
-      purchaseListFileUrl: needsPaymentRecord && item.hasVagueItemName
+      hasVagueItemName: Boolean(item.hasVagueItemName),
+      purchaseListFileUrl: item.hasVagueItemName
         ? (item.purchaseListFileUrl || null)
         : null,
     };

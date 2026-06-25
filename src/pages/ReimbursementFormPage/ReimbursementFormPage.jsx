@@ -38,8 +38,6 @@ const clearPaymentRecordFields = (item) => ({
   actualPaidAmount: undefined,
   amountMismatchReason: '',
   paymentRecordUrls: [],
-  hasVagueItemName: false,
-  purchaseListFileUrl: '',
   issuerPayeeInconsistent: false,
   explanationFileUrl: '',
 });
@@ -714,55 +712,6 @@ export const ReimbursementFormPage = () => {
 
                                 <FormItem
                                   {...restField}
-                                  name={[field.name, 'hasVagueItemName']}
-                                  valuePropName="checked"
-                                >
-                                  <Checkbox
-                                    onChange={(event) => (
-                                      handleHasVagueItemNameChange(index, event.target.checked)
-                                    )}
-                                  >
-                                    <View style={styles.checkboxLabel}>
-                                      <Text>{t('reimbursement:item.hasVagueItemName')}</Text>
-                                    </View>
-                                  </Checkbox>
-                                </FormItem>
-
-                                {hasVagueItemName && (
-                                  <FormItem
-                                    {...restField}
-                                    name={[field.name, 'purchaseListFileUrl']}
-                                    label={t('reimbursement:item.purchaseListFile')}
-                                    dependencies={[['items', field.name, 'hasVagueItemName']]}
-                                    rules={[
-                                      {
-                                        validator: async (_, value) => {
-                                          const vagueItemName = form.getFieldValue([
-                                            'items',
-                                            field.name,
-                                            'hasVagueItemName',
-                                          ]);
-                                          if (vagueItemName && !value) {
-                                            return Promise.reject(
-                                              new Error(t('reimbursement:validation.purchaseListRequired')),
-                                            );
-                                          }
-                                          return Promise.resolve();
-                                        },
-                                      },
-                                    ]}
-                                  >
-                                    <FileUploadField
-                                      fileType="purchaseList"
-                                      formId={formId}
-                                      itemId={`item-${index}-purchase-list`}
-                                      required
-                                    />
-                                  </FormItem>
-                                )}
-
-                                <FormItem
-                                  {...restField}
                                   name={[field.name, 'issuerPayeeInconsistent']}
                                   valuePropName="checked"
                                 >
@@ -819,6 +768,55 @@ export const ReimbursementFormPage = () => {
                                   </FormItem>
                                 )}
                               </>
+                            )}
+
+                            <FormItem
+                              {...restField}
+                              name={[field.name, 'hasVagueItemName']}
+                              valuePropName="checked"
+                            >
+                              <Checkbox
+                                onChange={(event) => (
+                                  handleHasVagueItemNameChange(index, event.target.checked)
+                                )}
+                              >
+                                <View style={styles.checkboxLabel}>
+                                  <Text>{t('reimbursement:item.hasVagueItemName')}</Text>
+                                </View>
+                              </Checkbox>
+                            </FormItem>
+
+                            {hasVagueItemName && (
+                              <FormItem
+                                {...restField}
+                                name={[field.name, 'purchaseListFileUrl']}
+                                label={t('reimbursement:item.purchaseListFile')}
+                                dependencies={[['items', field.name, 'hasVagueItemName']]}
+                                rules={[
+                                  {
+                                    validator: async (_, value) => {
+                                      const vagueItemName = form.getFieldValue([
+                                        'items',
+                                        field.name,
+                                        'hasVagueItemName',
+                                      ]);
+                                      if (vagueItemName && !value) {
+                                        return Promise.reject(
+                                          new Error(t('reimbursement:validation.purchaseListRequired')),
+                                        );
+                                      }
+                                      return Promise.resolve();
+                                    },
+                                  },
+                                ]}
+                              >
+                                <FileUploadField
+                                  fileType="purchaseList"
+                                  formId={formId}
+                                  itemId={`item-${index}-purchase-list`}
+                                  required
+                                />
+                              </FormItem>
                             )}
                           </>
                         );
