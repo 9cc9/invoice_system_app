@@ -35,6 +35,7 @@
     "paymentRecordHint": "Obligatorio si el monto es ¥200 o más y no es transferencia oficial (subida por lotes, máx. {{max}} archivos)",
     "officialTransferInvoice": "Factura de transferencia oficial",
     "hasVagueItemName": "Si los nombres de ítems son genéricos (p. ej. componentes, lote, set) o faltan nombres/cantidades específicos, debe proporcionar una lista de compra oficial con sello; sin lista formal, puede subir capturas de pedidos de Taobao como respaldo",
+    "hasVagueItemNameLabel": "Lista de compra / detalle requerido",
     "purchaseListFile": "Lista de compra",
     "issuerPayeeInconsistent": "Emisor y beneficiario no coinciden",
     "explanationFile": "Explicación",

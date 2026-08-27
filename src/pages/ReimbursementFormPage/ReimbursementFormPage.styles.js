@@ -115,9 +115,12 @@ export const styles = {
     height: 'auto',
   },
   checkboxLabel: {
-    display: 'inline-flex',
-    alignItems: 'center',
-    gap: '6px',
+    display: 'block',
+    lineHeight: 1.6,
+    whiteSpace: 'pre-line',
+  },
+  checkboxMultiline: {
+    alignItems: 'flex-start',
   },
   helpIcon: {
     color: '#94a3b8',

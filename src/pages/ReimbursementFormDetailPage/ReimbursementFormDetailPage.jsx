@@ -267,7 +267,7 @@ export const ReimbursementFormDetailPage = () => {
               </DetailField>
             )}
 
-            <DetailField label={t('reimbursement:item.hasVagueItemName')}>
+            <DetailField label={t('reimbursement:item.hasVagueItemNameLabel')}>
               <Text style={styles.fieldValue}>{formatBool(item.hasVagueItemName)}</Text>
             </DetailField>
 

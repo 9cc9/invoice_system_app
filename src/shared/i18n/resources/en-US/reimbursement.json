@@ -35,6 +35,7 @@
     "paymentRecordHint": "Required when amount is ¥200 or more and not official transfer (batch upload, up to {{max}} files)",
     "officialTransferInvoice": "Official transfer invoice",
     "hasVagueItemName": "If invoice item names are generic (e.g. components, batch, set) or lack specific names/quantities, a stamped official purchase list is required; if unavailable, Taobao order screenshots may be uploaded as supporting detail",
+    "hasVagueItemNameLabel": "Purchase list / detail required",
     "purchaseListFile": "Purchase List",
     "issuerPayeeInconsistent": "Issuer and payee information differ",
     "explanationFile": "Explanation",

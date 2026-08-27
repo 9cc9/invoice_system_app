@@ -776,6 +776,7 @@ export const ReimbursementFormPage = () => {
                               valuePropName="checked"
                             >
                               <Checkbox
+                                style={styles.checkboxMultiline}
                                 onChange={(event) => (
                                   handleHasVagueItemNameChange(index, event.target.checked)
                                 )}

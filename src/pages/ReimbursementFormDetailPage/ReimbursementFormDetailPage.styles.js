@@ -64,16 +64,21 @@ export const styles = {
   },
   fieldRow: {
     display: 'flex',
-    gap: '8px',
+    gap: '8px 16px',
     marginBottom: '10px',
     flexWrap: 'wrap',
+    alignItems: 'flex-start',
   },
   fieldLabel: {
     display: 'block',
+    flex: '0 1 240px',
+    maxWidth: '100%',
     minWidth: '120px',
     fontSize: '14px',
     color: '#64748b',
-    flexShrink: 0,
+    wordBreak: 'break-word',
+    whiteSpace: 'pre-line',
+    lineHeight: 1.6,
   },
   fieldValue: {
     display: 'block',
