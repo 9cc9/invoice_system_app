@@ -34,9 +34,9 @@
     "paymentRecord": "Payment Records",
     "paymentRecordHint": "Required when amount is ¥200 or more and not official transfer (batch upload, up to {{max}} files)",
     "officialTransferInvoice": "Official transfer invoice",
-    "hasVagueItemName": "If invoice item names are generic (e.g. components, batch, set) or lack specific names/quantities, a stamped official purchase list is required; if unavailable, Taobao order screenshots may be uploaded as supporting detail",
-    "hasVagueItemNameLabel": "Purchase list / detail required",
-    "purchaseListFile": "Purchase List",
+    "hasVagueItemName": "Materials: If invoice item names are generic (e.g. components, batch, set) or lack specific names/quantities, a stamped official purchase list is required; if unavailable, Taobao order screenshots may be uploaded as supporting detail.\nServer rental: A formal expense breakdown or an invoice with itemized charges is required.\nTravel: For hotel invoices that do not state the number of rooms and nights, a hotel folio must be uploaded as additional supporting documentation.",
+    "hasVagueItemNameLabel": "Detail / supporting document required",
+    "purchaseListFile": "Detail / Supporting Document",
     "issuerPayeeInconsistent": "Issuer and payee information differ",
     "explanationFile": "Explanation",
     "viewExplanationTemplate": "View template",
@@ -114,8 +114,8 @@
     "paymentRecordRequiredWithIndex": "Invoice {{index}}: payment records are required when amount is ¥200 or more",
     "explanationRequired": "Explanation is required when issuer and payee information differ",
     "explanationRequiredWithIndex": "Invoice {{index}}: explanation is required when issuer and payee information differ",
-    "purchaseListRequired": "Purchase list is required for vague invoice item names",
-    "purchaseListRequiredWithIndex": "Invoice {{index}}: purchase list is required for vague invoice item names"
+    "purchaseListRequired": "Supporting detail or documentation is required",
+    "purchaseListRequiredWithIndex": "Invoice {{index}}: supporting detail or documentation is required"
   },
   "message": {
     "draftSaved": "Draft saved",

@@ -34,9 +34,9 @@
     "paymentRecord": "支付记录",
     "paymentRecordHint": "金额 ≥ 200 元且非因公转账时必填，可批量上传（最多 {{max}} 个）",
     "officialTransferInvoice": "因公转账发票（勾选则无需上传支付记录）",
-    "hasVagueItemName": "材料费：发票货物名称为元器件、批、套，或未标注具体品名、数量的，必须提供有盖章的正式购置清单；\n服务器租赁：需要提供正式的费用明细单，或者发票上带有费用明细项\n无正式购置清单的，可上传淘宝订单截图作为明细依据",
-    "hasVagueItemNameLabel": "需购置清单/明细依据",
-    "purchaseListFile": "购置清单",
+    "hasVagueItemName": "材料费：发票货物名称为元器件、批、套，或未标注具体品名、数量的，必须提供有盖章的正式购置清单；无正式购置清单的，可上传淘宝订单截图作为明细依据。\n服务器租赁：需要提供正式的费用明细单，或者发票上带有费用明细项。\n差旅费：酒店类发票上未注明几间房、几晚的，须补充上传酒店水单作为附加说明。",
+    "hasVagueItemNameLabel": "需明细依据/附加说明",
+    "purchaseListFile": "明细依据/附加说明",
     "issuerPayeeInconsistent": "开票方与收款方信息不一致",
     "explanationFile": "情况说明",
     "viewExplanationTemplate": "查看模版",
@@ -114,8 +114,8 @@
     "paymentRecordRequiredWithIndex": "发票 {{index}}：金额 ≥ 200 元时须上传支付记录",
     "explanationRequired": "开票方与收款方信息不一致时须上传情况说明",
     "explanationRequiredWithIndex": "发票 {{index}}：开票方与收款方信息不一致时须上传情况说明",
-    "purchaseListRequired": "发票品名不规范时须上传购置清单",
-    "purchaseListRequiredWithIndex": "发票 {{index}}：发票品名不规范时须上传购置清单"
+    "purchaseListRequired": "须上传明细依据或附加说明",
+    "purchaseListRequiredWithIndex": "发票 {{index}}：须上传明细依据或附加说明"
   },
   "message": {
     "draftSaved": "草稿已保存",

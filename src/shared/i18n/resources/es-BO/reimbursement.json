@@ -34,9 +34,9 @@
     "paymentRecord": "Comprobantes de pago",
     "paymentRecordHint": "Obligatorio si el monto es ¥200 o más y no es transferencia oficial (subida por lotes, máx. {{max}} archivos)",
     "officialTransferInvoice": "Factura de transferencia oficial",
-    "hasVagueItemName": "Si los nombres de ítems son genéricos (p. ej. componentes, lote, set) o faltan nombres/cantidades específicos, debe proporcionar una lista de compra oficial con sello; sin lista formal, puede subir capturas de pedidos de Taobao como respaldo",
-    "hasVagueItemNameLabel": "Lista de compra / detalle requerido",
-    "purchaseListFile": "Lista de compra",
+    "hasVagueItemName": "Materiales: Si los nombres de ítems son genéricos (p. ej. componentes, lote, set) o faltan nombres/cantidades específicos, debe proporcionar una lista de compra oficial con sello; sin lista formal, puede subir capturas de pedidos de Taobao como respaldo.\nAlquiler de servidores: Se requiere un desglose formal de gastos o una factura con cargos detallados.\nViajes: Para facturas de hotel que no indiquen cuántas habitaciones y noches, debe subir el comprobante del hotel como documentación adicional.",
+    "hasVagueItemNameLabel": "Detalle / documento de respaldo requerido",
+    "purchaseListFile": "Detalle / documento de respaldo",
     "issuerPayeeInconsistent": "Emisor y beneficiario no coinciden",
     "explanationFile": "Explicación",
     "viewExplanationTemplate": "Ver plantilla",
@@ -114,8 +114,8 @@
     "paymentRecordRequiredWithIndex": "Factura {{index}}: se requieren comprobantes de pago si el monto es ¥200 o más",
     "explanationRequired": "Se requiere explicación si emisor y beneficiario no coinciden",
     "explanationRequiredWithIndex": "Factura {{index}}: se requiere explicación si emisor y beneficiario no coinciden",
-    "purchaseListRequired": "Se requiere lista de compra si los nombres de ítems son vagos",
-    "purchaseListRequiredWithIndex": "Factura {{index}}: se requiere lista de compra si los nombres de ítems son vagos"
+    "purchaseListRequired": "Se requiere detalle o documentación de respaldo",
+    "purchaseListRequiredWithIndex": "Factura {{index}}: se requiere detalle o documentación de respaldo"
   },
   "message": {
     "draftSaved": "Borrador guardado",
