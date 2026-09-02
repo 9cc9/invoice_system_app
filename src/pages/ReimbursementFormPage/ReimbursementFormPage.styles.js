@@ -104,6 +104,29 @@ export const styles = {
     marginBottom: '16px',
     whiteSpace: 'pre-line',
   },
+  remarkExtra: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '4px',
+  },
+  remarkHint: {
+    display: 'block',
+    color: '#475569',
+    fontSize: '13px',
+    lineHeight: 1.6,
+  },
+  remarkGuide: {
+    display: 'block',
+    color: '#64748b',
+    fontSize: '13px',
+    lineHeight: 1.6,
+    whiteSpace: 'pre-line',
+  },
+  remarkTemplateButton: {
+    alignSelf: 'flex-start',
+    padding: 0,
+    height: 'auto',
+  },
   explanationLabel: {
     display: 'flex',
     alignItems: 'center',

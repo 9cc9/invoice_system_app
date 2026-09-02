@@ -17,7 +17,16 @@
     "expenseCategory": "Expense Category",
     "expenseCategoryPlaceholder": "Select expense category",
     "remark": "Remark",
-    "remarkPlaceholder": "Optional notes for this form"
+    "remarkPlaceholder": "Optional notes for this form",
+    "remarkHint": "Fill in each item below to help teachers review and enter data into the finance system.",
+    "remarkSelectCategoryHint": "Select an expense category first to show the matching remark template.",
+    "remarkGuideMaterial": "Include: team name; competition stage and award level; whether you participated in the school competition; school competition award (required for sponsor subsidy); purpose of purchase.",
+    "remarkGuideTravel": "Include: team name; competition stage and awards; traveler name and student ID; origin and destination; travel dates; explain if one-way only or round-trip routes do not match; expense summary.",
+    "remarkTemplateMaterial": "Team name:\nCompetition stage and award level:\nParticipated in school competition:\nSchool competition award (if any):\nPurpose:",
+    "remarkTemplateTravel": "Team name:\nCompetition stage and awards:\nTraveler name and student ID: {{studentName}} ({{studentAccountNo}})\nOrigin → Destination:\nTravel dates:\nOne-way / round-trip note (required if one-way or routes do not match):\nExpense summary (transport XX, lodging XX, etc.):",
+    "remarkFillTemplate": "Insert remark template",
+    "remarkFillTemplateConfirmTitle": "Replace remark with template?",
+    "remarkFillTemplateConfirmContent": "This will overwrite the current remark text."
   },
   "item": {
     "title": "Invoice {{index}}",

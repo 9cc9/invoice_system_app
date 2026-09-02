@@ -21,6 +21,31 @@ export const requiresPaymentRecord = (amount, officialTransferInvoice = false) =
   return Number.isFinite(num) && num >= PAYMENT_RECORD_THRESHOLD;
 };
 
+export const REMARK_TEMPLATE_EXPENSE_CATEGORIES = ['MATERIAL', 'TRAVEL'];
+
+export const buildRemarkTemplate = (expenseCategory, t, user = {}) => {
+  if (expenseCategory === 'MATERIAL') {
+    return t('reimbursement:form.remarkTemplateMaterial');
+  }
+  if (expenseCategory === 'TRAVEL') {
+    return t('reimbursement:form.remarkTemplateTravel', {
+      studentName: user.name || '',
+      studentAccountNo: user.accountNo || '',
+    });
+  }
+  return '';
+};
+
+export const isRemarkTemplate = (remark, t, user = {}) => {
+  const normalizedRemark = (remark || '').trim();
+  if (!normalizedRemark) {
+    return true;
+  }
+  return REMARK_TEMPLATE_EXPENSE_CATEGORIES.some(
+    (category) => buildRemarkTemplate(category, t, user).trim() === normalizedRemark,
+  );
+};
+
 export const createEmptyInvoiceItem = () => ({
   invoiceName: '',
   invoiceFileUrl: '',

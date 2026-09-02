@@ -15,6 +15,7 @@ import { Text } from 'shared/ui/Text';
 import { useAuthStore } from 'entities/auth';
 import {
   buildFormPayload,
+  buildRemarkTemplate,
   createEmptyInvoiceItem,
   createReimbursementForm,
   updateReimbursementForm,
@@ -22,6 +23,7 @@ import {
   getReimbursementForm,
   fetchCategories,
   requiresPaymentRecord,
+  isRemarkTemplate,
 } from 'entities/reimbursement';
 import { FileUploadField } from 'components/reimbursement';
 import { ROUTES } from 'shared/constants/routes';
@@ -357,8 +359,47 @@ export const ReimbursementFormPage = () => {
     const currentExpenseCategory = form.getFieldValue('expenseCategory');
     const allowedCodes = categoryOptions.linkage[businessCategory] || [];
     if (currentExpenseCategory && !allowedCodes.includes(currentExpenseCategory)) {
-      form.setFieldsValue({ expenseCategory: undefined });
+      form.setFieldsValue({ expenseCategory: undefined, remark: '' });
     }
+  };
+
+  const applyRemarkTemplate = (expenseCategory, { force = false } = {}) => {
+    if (!expenseCategory) {
+      return;
+    }
+
+    const currentRemark = form.getFieldValue('remark');
+    const template = buildRemarkTemplate(expenseCategory, t, user);
+
+    if (force || isRemarkTemplate(currentRemark, t, user)) {
+      form.setFieldsValue({ remark: template });
+    }
+  };
+
+  const handleExpenseCategoryChange = (expenseCategory) => {
+    applyRemarkTemplate(expenseCategory);
+  };
+
+  const handleFillRemarkTemplate = () => {
+    const expenseCategory = form.getFieldValue('expenseCategory');
+    if (!expenseCategory) {
+      return;
+    }
+
+    const currentRemark = (form.getFieldValue('remark') || '').trim();
+    const template = buildRemarkTemplate(expenseCategory, t, user).trim();
+
+    if (currentRemark && currentRemark !== template) {
+      Modal.confirm({
+        title: t('reimbursement:form.remarkFillTemplateConfirmTitle'),
+        content: t('reimbursement:form.remarkFillTemplateConfirmContent'),
+        centered: true,
+        onOk: () => applyRemarkTemplate(expenseCategory, { force: true }),
+      });
+      return;
+    }
+
+    applyRemarkTemplate(expenseCategory, { force: true });
   };
 
   if (pageLoading) {
@@ -428,14 +469,68 @@ export const ReimbursementFormPage = () => {
                     placeholder={t('reimbursement:form.expenseCategoryPlaceholder')}
                     disabled={!businessCategory}
                     options={expenseCategoryOptions}
+                    onChange={handleExpenseCategoryChange}
                   />
                 </FormItem>
               );
             }}
           </FormItem>
 
-          <FormItem name="remark" label={t('reimbursement:form.remark')}>
-            <TextArea rows={3} placeholder={t('reimbursement:form.remarkPlaceholder')} />
+          <FormItem
+            noStyle
+            shouldUpdate={(prev, cur) => prev.expenseCategory !== cur.expenseCategory}
+          >
+            {({ getFieldValue }) => {
+              const expenseCategory = getFieldValue('expenseCategory');
+              const remarkGuideKey = expenseCategory === 'MATERIAL'
+                ? 'remarkGuideMaterial'
+                : expenseCategory === 'TRAVEL'
+                  ? 'remarkGuideTravel'
+                  : null;
+
+              return (
+                <FormItem
+                  name="remark"
+                  label={t('reimbursement:form.remark')}
+                  extra={(
+                    <View style={styles.remarkExtra}>
+                      {remarkGuideKey ? (
+                        <>
+                          <Text style={styles.remarkHint}>
+                            {t('reimbursement:form.remarkHint')}
+                          </Text>
+                          <Text style={styles.remarkGuide}>
+                            {t(`reimbursement:form.${remarkGuideKey}`)}
+                          </Text>
+                          <Button
+                            type="link"
+                            style={styles.remarkTemplateButton}
+                            onClick={handleFillRemarkTemplate}
+                          >
+                            {t('reimbursement:form.remarkFillTemplate')}
+                          </Button>
+                        </>
+                      ) : (
+                        <Text style={styles.remarkGuide}>
+                          {t('reimbursement:form.remarkSelectCategoryHint')}
+                        </Text>
+                      )}
+                    </View>
+                  )}
+                >
+                  <TextArea
+                    rows={8}
+                    maxLength={512}
+                    showCount
+                    placeholder={
+                      remarkGuideKey
+                        ? undefined
+                        : t('reimbursement:form.remarkSelectCategoryHint')
+                    }
+                  />
+                </FormItem>
+              );
+            }}
           </FormItem>
 
           <Text style={styles.sectionTitle}>{t('reimbursement:section.invoiceItems')}</Text>

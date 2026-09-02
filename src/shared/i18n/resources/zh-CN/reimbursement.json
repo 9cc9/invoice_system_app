@@ -17,7 +17,16 @@
     "expenseCategory": "报销类目",
     "expenseCategoryPlaceholder": "请选择报销类目",
     "remark": "备注",
-    "remarkPlaceholder": "可选，填写整单说明"
+    "remarkPlaceholder": "可选，填写整单说明",
+    "remarkHint": "请按下列框架逐项填写，便于老师审核与录入财务系统。",
+    "remarkSelectCategoryHint": "请先选择报销类目，系统将提供对应填写框架。",
+    "remarkGuideMaterial": "须包含：队伍名称；参赛赛段（校赛/省赛/国赛）及获奖等级；是否参加校赛（未参加校赛报材料费不予报销）；校赛获奖等级（涉及赞助商补贴时必填）；用途说明。",
+    "remarkGuideTravel": "须包含：队伍名称；参赛赛段及获奖情况；出差人姓名、学号；出发地、目的地；出差起止日期；若交通费仅为单程或往返出发地/目的地不一致须单独说明；费用概要。",
+    "remarkTemplateMaterial": "队伍名称：\n参赛赛段及获奖等级：\n是否参加校赛：\n校赛获奖等级（如有）：\n用途说明：",
+    "remarkTemplateTravel": "队伍名称：\n参赛赛段及获奖情况：\n出差人姓名、学号：{{studentName}}（{{studentAccountNo}}）\n出发地 → 目的地：\n出差起止日期：\n单程/往返说明（如仅为单程或往返地不一致须说明）：\n费用概要（交通 XX 元、住宿 XX 元等）：",
+    "remarkFillTemplate": "填入备注模板",
+    "remarkFillTemplateConfirmTitle": "重新填入模板？",
+    "remarkFillTemplateConfirmContent": "当前备注已有内容，重新填入将覆盖现有文字。"
   },
   "item": {
     "title": "发票 {{index}}",

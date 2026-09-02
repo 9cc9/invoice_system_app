@@ -17,7 +17,16 @@
     "expenseCategory": "Categoría de gasto",
     "expenseCategoryPlaceholder": "Seleccione categoría de gasto",
     "remark": "Observación",
-    "remarkPlaceholder": "Notas opcionales"
+    "remarkPlaceholder": "Notas opcionales",
+    "remarkHint": "Complete cada ítem para facilitar la revisión y el ingreso en el sistema financiero.",
+    "remarkSelectCategoryHint": "Seleccione primero la categoría de gasto para ver la plantilla de observación.",
+    "remarkGuideMaterial": "Incluya: nombre del equipo; etapa y premio; si participó en competencia escolar; premio escolar (para subsidio); propósito.",
+    "remarkGuideTravel": "Incluya: equipo; etapa y premios; viajero e ID; origen y destino; fechas; explique si es solo ida o rutas no coinciden; resumen de gastos.",
+    "remarkTemplateMaterial": "Nombre del equipo:\nEtapa y premio:\nParticipó en competencia escolar:\nPremio escolar (si aplica):\nPropósito:",
+    "remarkTemplateTravel": "Nombre del equipo:\nEtapa y premios:\nViajero e ID: {{studentName}} ({{studentAccountNo}})\nOrigen → Destino:\nFechas de viaje:\nNota ida/vuelta (si aplica):\nResumen de gastos:",
+    "remarkFillTemplate": "Insertar plantilla",
+    "remarkFillTemplateConfirmTitle": "¿Reemplazar observación?",
+    "remarkFillTemplateConfirmContent": "Se sobrescribirá el texto actual."
   },
   "item": {
     "title": "Factura {{index}}",
