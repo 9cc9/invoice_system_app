@@ -8,7 +8,9 @@
   "section": {
     "basicInfo": "基本信息",
     "invoiceItems": "发票明细",
-    "invoiceRules": "（1）单张发票金额 < 200 元，或因公转账的发票，只需上传电子发票 PDF；\n（2）单张发票金额 ≥ 200 元且非因公转账，须根据支付记录手动填写实际支付金额并上传支付记录（可批量上传）；若与发票金额不一致，须说明原因；\n（3）发票货物名称为元器件、批、套，或未标注具体品名、数量的，须勾选并上传有盖章的正式购置清单；无正式购置清单的，可上传淘宝订单截图作为明细依据；\n（4）若开票方与收款方信息不一致，须勾选并上传情况说明。"
+    "invoiceRules": "（1）单张发票金额 < 200 元，或因公转账的发票，只需上传电子发票 PDF；\n（2）单张发票金额 ≥ 200 元且非因公转账，须根据支付记录手动填写实际支付金额并上传支付记录（请上传支付宝/微信交易记录页面截图，非淘宝商品页；可批量上传）；若与发票金额不一致，须说明原因；\n（3）发票抬头须为「电子科技大学」，纳税人识别号 121000004507193117；\n（4）若开票方与收款方信息不一致，须勾选并上传情况说明；不支持现金支付、对私转账。",
+    "materialRules": "【材料费】仅报销元器件类耗材。不可报销：图书、化学试剂、打印费、鼠标/键盘/数据线等办公用品、计算机配件。单价超过 1000 元的开发板不可报销。发票内容为批/套/技术服务、定额发票或未列明品名的，须勾选并上传购置清单（或淘宝订单截图）。",
+    "travelRules": "【差旅费】须上传机票行程单、铁路电子客票或车票、酒店发票等 PDF。长途交通费报销金额不超过成都至赛地高铁二等座价格，超出部分自行承担。酒店发票未注明房间/晚数的，须上传酒店水单。单程或往返出发地/目的地不一致，须在备注中说明原因。"
   },
   "form": {
     "studentAccountNo": "学号",
@@ -20,10 +22,12 @@
     "remarkPlaceholder": "可选，填写整单说明",
     "remarkHint": "请按下列框架逐项填写，便于老师审核与录入财务系统。",
     "remarkSelectCategoryHint": "请先选择报销类目，系统将提供对应填写框架。",
-    "remarkGuideMaterial": "须包含：队伍名称；参赛赛段（校赛/省赛/国赛）及获奖等级；是否参加校赛（未参加校赛报材料费不予报销）；校赛获奖等级（涉及赞助商补贴时必填）；用途说明。",
-    "remarkGuideTravel": "须包含：队伍名称；参赛赛段及获奖情况；出差人姓名、学号；出发地、目的地；出差起止日期；若交通费仅为单程或往返出发地/目的地不一致须单独说明；费用概要。",
-    "remarkTemplateMaterial": "队伍名称：\n参赛赛段及获奖等级：\n是否参加校赛：\n校赛获奖等级（如有）：\n用途说明：",
-    "remarkTemplateTravel": "队伍名称：\n参赛赛段及获奖情况：\n出差人姓名、学号：{{studentName}}（{{studentAccountNo}}）\n出发地 → 目的地：\n出差起止日期：\n单程/往返说明（如仅为单程或往返地不一致须说明）：\n费用概要（交通 XX 元、住宿 XX 元等）：",
+    "remarkGuideMaterial": "须包含：团队编号；团队成员姓名、学号；参赛赛段（校赛/省赛/国赛）及获奖等级；是否参加校赛（未参加校赛报材料费不予报销）；校赛获奖等级（涉及赞助商补贴时必填）；用途说明。",
+    "remarkGuideTravel": "须包含：团队编号；参赛赛段及获奖情况；团队成员姓名、学号；出发地、目的地；出差起止日期；若交通费仅为单程或往返出发地/目的地不一致须单独说明；费用概要。",
+    "remarkGuideTravelIot": "须包含：团队编号；参赛赛段（复赛/决赛）；获奖情况；团队成员姓名、学号；出发地、目的地；出差起止日期；若交通费仅为单程或往返出发地/目的地不一致须单独说明；费用概要。",
+    "remarkTemplateMaterial": "团队编号：\n团队成员姓名、学号：{{studentName}}（{{studentAccountNo}}）\n参赛赛段及获奖等级：\n是否参加校赛：\n校赛获奖等级（如有）：\n用途说明：",
+    "remarkTemplateTravel": "团队编号：\n参赛赛段及获奖情况：\n团队成员姓名、学号：{{studentName}}（{{studentAccountNo}}）\n出发地 → 目的地：\n出差起止日期：\n单程/往返说明（如仅为单程或往返地不一致须说明）：\n费用概要（交通 XX 元、住宿 XX 元等）：",
+    "remarkTemplateTravelIot": "团队编号：\n参赛赛段（复赛/决赛）：\n获奖情况：\n团队成员姓名、学号：{{studentName}}（{{studentAccountNo}}）\n出发地 → 目的地：\n出差起止日期：\n单程/往返说明（如仅为单程或往返地不一致须说明）：\n费用概要（交通 XX 元、住宿 XX 元等）：",
     "remarkFillTemplate": "填入备注模板",
     "remarkFillTemplateConfirmTitle": "重新填入模板？",
     "remarkFillTemplateConfirmContent": "当前备注已有内容，重新填入将覆盖现有文字。"
@@ -41,9 +45,9 @@
     "amountMismatchReason": "金额不一致原因",
     "amountMismatchReasonPlaceholder": "请用一句话说明支付金额与发票金额不一致的原因",
     "paymentRecord": "支付记录",
-    "paymentRecordHint": "金额 ≥ 200 元且非因公转账时必填，可批量上传（最多 {{max}} 个）",
+    "paymentRecordHint": "金额 ≥ 200 元且非因公转账时必填，请上传支付宝/微信交易记录页面截图（非淘宝商品页），可批量上传（最多 {{max}} 个）",
     "officialTransferInvoice": "因公转账发票（勾选则无需上传支付记录）",
-    "hasVagueItemName": "材料费：发票货物名称为元器件、批、套，或未标注具体品名、数量的，必须提供有盖章的正式购置清单；无正式购置清单的，可上传淘宝订单截图作为明细依据。\n服务器租赁：需要提供正式的费用明细单，或者发票上带有费用明细项。\n差旅费：酒店类发票上未注明几间房、几晚的，须补充上传酒店水单作为附加说明。",
+    "hasVagueItemName": "材料费：发票内容为元器件、批、套、技术服务、定额发票，或未标注具体品名、数量的，须上传购置清单（有盖章正式清单优先；无清单可上传淘宝订单截图）。单价超过 1000 元的开发板不可报销。不可报销图书、化学试剂、打印费、办公用品、计算机配件等。\n服务器租赁：需要提供正式的费用明细单，或者发票上带有费用明细项。\n差旅费：酒店类发票上未注明几间房、几晚的，须补充上传酒店水单作为附加说明。",
     "hasVagueItemNameLabel": "需明细依据/附加说明",
     "purchaseListFile": "明细依据/附加说明",
     "issuerPayeeInconsistent": "开票方与收款方信息不一致",
@@ -60,6 +64,7 @@
     "submittedAt": "提交时间",
     "createdAt": "创建时间",
     "totalActualPaidAmount": "实际支付合计",
+    "reviewRemark": "审核备注",
     "yes": "是",
     "no": "否"
   },
@@ -79,7 +84,16 @@
     "button": {
       "search": "查询",
       "download": "下载",
-      "batchDownload": "打包下载（{{count}}）"
+      "batchDownload": "打包下载（{{count}}）",
+      "markStatus": "标记状态"
+    },
+    "markStatus": {
+      "title": "标记状态",
+      "placeholder": "请选择目标状态",
+      "confirm": "确认",
+      "cancel": "取消",
+      "reviewRemarkPlaceholder": "审核备注（可选）",
+      "reviewRemarkRequiredPlaceholder": "请填写退回原因或修改说明（必填）"
     },
     "empty": {
       "noForms": "该业务类目下暂无学生报销单"
@@ -87,7 +101,9 @@
     "message": {
       "selectFormsFirst": "请至少选择一条可下载的报销单",
       "downloadSuccess": "打包下载成功",
-      "downloadFailed": "打包下载失败"
+      "downloadFailed": "打包下载失败",
+      "markStatusSuccess": "状态已更新",
+      "markStatusFailed": "标记状态失败"
     }
   },
   "button": {
@@ -99,6 +115,7 @@
     "backToList": "返回列表",
     "viewDetail": "详情",
     "editDraft": "编辑草稿",
+    "editReturned": "修改并重新提交",
     "uploadRequired": "上传文件",
     "uploadOptional": "上传文件（可选）"
   },

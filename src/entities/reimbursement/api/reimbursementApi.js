@@ -13,6 +13,9 @@ export const fetchCategories = () =>
 export const fetchFormStatuses = () =>
   apiClient.get(API_ENDPOINTS.ENUMS.FORM_STATUSES);
 
+export const fetchAdminMarkableStatuses = () =>
+  apiClient.get(API_ENDPOINTS.ENUMS.ADMIN_MARKABLE_STATUSES);
+
 export const listReimbursementForms = (params) => {
   const normalized = typeof params === 'string' ? { status: params } : (params || {});
   const searchParams = new URLSearchParams();
@@ -123,3 +126,6 @@ export const submitReimbursementForm = (id) =>
 
 export const deleteReimbursementForm = (id) =>
   apiClient.delete(API_ENDPOINTS.REIMBURSEMENT_FORMS.DETAIL(id));
+
+export const markReimbursementFormStatus = (id, payload) =>
+  apiClient.post(API_ENDPOINTS.REIMBURSEMENT_FORMS.MARK_STATUS(id), payload);

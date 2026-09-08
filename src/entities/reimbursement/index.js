@@ -1,6 +1,7 @@
 export {
   fetchCategories,
   fetchFormStatuses,
+  fetchAdminMarkableStatuses,
   listReimbursementForms,
   batchDownloadReimbursementForms,
   buildReimbursementDownloadFilename,
@@ -9,7 +10,20 @@ export {
   updateReimbursementForm,
   submitReimbursementForm,
   deleteReimbursementForm,
+  markReimbursementFormStatus,
 } from './api/reimbursementApi';
+
+export {
+  STATUS_COLOR,
+  DOWNLOADABLE_STATUSES,
+  TERMINAL_STATUSES,
+  isStatusMarkable,
+  isEditableByStudent,
+  RETURNED_STATUS,
+  REQUIRES_REVIEW_REMARK_STATUSES,
+} from './status';
+
+export { MarkStatusModal } from './ui/MarkStatusModal';
 
 const PAYMENT_RECORD_THRESHOLD = 200;
 
@@ -22,18 +36,35 @@ export const requiresPaymentRecord = (amount, officialTransferInvoice = false) =
 };
 
 export const REMARK_TEMPLATE_EXPENSE_CATEGORIES = ['MATERIAL', 'TRAVEL'];
+export const IOT_CONTEST_BUSINESS_CATEGORY = 'IOT_CONTEST';
 
-export const buildRemarkTemplate = (expenseCategory, t, user = {}) => {
+export const buildRemarkTemplate = (expenseCategory, t, user = {}, businessCategory) => {
+  const studentInfo = {
+    studentName: user.name || '',
+    studentAccountNo: user.accountNo || '',
+  };
   if (expenseCategory === 'MATERIAL') {
-    return t('reimbursement:form.remarkTemplateMaterial');
+    return t('reimbursement:form.remarkTemplateMaterial', studentInfo);
   }
   if (expenseCategory === 'TRAVEL') {
-    return t('reimbursement:form.remarkTemplateTravel', {
-      studentName: user.name || '',
-      studentAccountNo: user.accountNo || '',
-    });
+    if (businessCategory === IOT_CONTEST_BUSINESS_CATEGORY) {
+      return t('reimbursement:form.remarkTemplateTravelIot', studentInfo);
+    }
+    return t('reimbursement:form.remarkTemplateTravel', studentInfo);
   }
   return '';
+};
+
+export const getRemarkGuideKey = (expenseCategory, businessCategory) => {
+  if (expenseCategory === 'MATERIAL') {
+    return 'remarkGuideMaterial';
+  }
+  if (expenseCategory === 'TRAVEL') {
+    return businessCategory === IOT_CONTEST_BUSINESS_CATEGORY
+      ? 'remarkGuideTravelIot'
+      : 'remarkGuideTravel';
+  }
+  return null;
 };
 
 export const isRemarkTemplate = (remark, t, user = {}) => {
@@ -41,9 +72,15 @@ export const isRemarkTemplate = (remark, t, user = {}) => {
   if (!normalizedRemark) {
     return true;
   }
-  return REMARK_TEMPLATE_EXPENSE_CATEGORIES.some(
-    (category) => buildRemarkTemplate(category, t, user).trim() === normalizedRemark,
-  );
+  const templates = REMARK_TEMPLATE_EXPENSE_CATEGORIES.flatMap((category) => (
+    category === 'TRAVEL'
+      ? [
+        buildRemarkTemplate(category, t, user),
+        buildRemarkTemplate(category, t, user, IOT_CONTEST_BUSINESS_CATEGORY),
+      ]
+      : [buildRemarkTemplate(category, t, user)]
+  ));
+  return templates.some((template) => template.trim() === normalizedRemark);
 };
 
 export const createEmptyInvoiceItem = () => ({

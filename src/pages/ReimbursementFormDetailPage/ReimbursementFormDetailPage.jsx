@@ -5,7 +5,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { Descriptions, Tag } from 'antd';
-import { ArrowLeftOutlined, DownloadOutlined, EditOutlined } from '@ant-design/icons';
+import { ArrowLeftOutlined, DownloadOutlined, EditOutlined, TagsOutlined } from '@ant-design/icons';
 import { Button } from 'shared/ui/Button';
 import { View } from 'shared/ui/View';
 import { Text } from 'shared/ui/Text';
@@ -14,20 +14,18 @@ import { getFileDownloadUrl } from 'entities/file';
 import {
   batchDownloadReimbursementForms,
   buildReimbursementDownloadFilename,
+  fetchAdminMarkableStatuses,
   getReimbursementForm,
+  markReimbursementFormStatus,
+  MarkStatusModal,
+  STATUS_COLOR,
+  DOWNLOADABLE_STATUSES,
+  isStatusMarkable,
+  isEditableByStudent,
 } from 'entities/reimbursement';
 import { ROUTES } from 'shared/constants/routes';
 import { useTranslation } from 'shared/hooks/useTranslation';
 import { styles } from './ReimbursementFormDetailPage.styles';
-
-const STATUS_COLOR = {
-  DRAFT: 'default',
-  SUBMITTED: 'processing',
-  DOWNLOADED: 'success',
-  ARCHIVED: 'warning',
-};
-
-const DOWNLOADABLE_STATUSES = new Set(['SUBMITTED', 'DOWNLOADED', 'ARCHIVED']);
 
 const formatDateTime = (value) => {
   if (!value) return '-';
@@ -101,6 +99,9 @@ export const ReimbursementFormDetailPage = () => {
   const [form, setForm] = useState(null);
   const [loading, setLoading] = useState(true);
   const [downloading, setDownloading] = useState(false);
+  const [markStatusOpen, setMarkStatusOpen] = useState(false);
+  const [markingStatus, setMarkingStatus] = useState(false);
+  const [adminMarkableStatuses, setAdminMarkableStatuses] = useState([]);
 
   const loadForm = useCallback(async () => {
     setLoading(true);
@@ -119,6 +120,15 @@ export const ReimbursementFormDetailPage = () => {
     loadForm();
   }, [loadForm]);
 
+  useEffect(() => {
+    if (!isAdminView) return;
+    fetchAdminMarkableStatuses()
+      .then((statuses) => setAdminMarkableStatuses(statuses || []))
+      .catch(() => {
+        message.error(t('reimbursement:message.loadOptionsFailed'));
+      });
+  }, [isAdminView, t]);
+
   const handleDownload = async () => {
     if (!form || !DOWNLOADABLE_STATUSES.has(form.status)) return;
     setDownloading(true);
@@ -134,6 +144,21 @@ export const ReimbursementFormDetailPage = () => {
       setDownloading(false);
     }
   };
+
+  const confirmMarkStatus = useCallback(async (status, reviewRemark) => {
+    if (!form || !isStatusMarkable(form.status)) return;
+    setMarkingStatus(true);
+    try {
+      await markReimbursementFormStatus(form.id, { status, reviewRemark });
+      message.success(t('reimbursement:teacher.message.markStatusSuccess'));
+      setMarkStatusOpen(false);
+      await loadForm();
+    } catch (error) {
+      message.error(error.message || t('reimbursement:teacher.message.markStatusFailed'));
+    } finally {
+      setMarkingStatus(false);
+    }
+  }, [form, loadForm, t]);
 
   if (loading) {
     return (
@@ -166,13 +191,15 @@ export const ReimbursementFormDetailPage = () => {
           </View>
         </View>
         <View style={styles.headerActions}>
-          {!isAdminView && form.status === 'DRAFT' && (
+          {!isAdminView && isEditableByStudent(form.status) && (
             <Button
               type="primary"
               icon={<EditOutlined />}
               onClick={() => navigate(ROUTES.STUDENT_FORM_EDIT(form.id))}
             >
-              {t('reimbursement:button.editDraft')}
+              {form.status === 'RETURNED'
+                ? t('reimbursement:button.editReturned')
+                : t('reimbursement:button.editDraft')}
             </Button>
           )}
           {isAdminView && DOWNLOADABLE_STATUSES.has(form.status) && (
@@ -183,6 +210,15 @@ export const ReimbursementFormDetailPage = () => {
               onClick={handleDownload}
             >
               {t('reimbursement:teacher.button.download')}
+            </Button>
+          )}
+          {isAdminView && isStatusMarkable(form.status) && (
+            <Button
+              icon={<TagsOutlined />}
+              loading={markingStatus}
+              onClick={() => setMarkStatusOpen(true)}
+            >
+              {t('reimbursement:teacher.button.markStatus')}
             </Button>
           )}
           <Button icon={<ArrowLeftOutlined />} onClick={() => navigate(backRoute)}>
@@ -222,6 +258,11 @@ export const ReimbursementFormDetailPage = () => {
           <Descriptions.Item label={t('reimbursement:form.remark')} span={2}>
             {form.remark || '-'}
           </Descriptions.Item>
+          {form.reviewRemark && (
+            <Descriptions.Item label={t('reimbursement:detail.reviewRemark')} span={2}>
+              {form.reviewRemark}
+            </Descriptions.Item>
+          )}
         </Descriptions>
 
         <Text style={styles.sectionTitle}>
@@ -285,6 +326,14 @@ export const ReimbursementFormDetailPage = () => {
           </View>
         ))}
       </View>
+
+      <MarkStatusModal
+        open={markStatusOpen}
+        loading={markingStatus}
+        statuses={adminMarkableStatuses}
+        onCancel={() => setMarkStatusOpen(false)}
+        onConfirm={confirmMarkStatus}
+      />
     </View>
   );
 };

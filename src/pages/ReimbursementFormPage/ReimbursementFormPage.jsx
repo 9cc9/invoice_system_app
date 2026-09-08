@@ -4,7 +4,7 @@
 
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Select, InputNumber, Card, Checkbox, Modal, Image } from 'antd';
+import { Select, InputNumber, Card, Checkbox, Modal, Image, Alert } from 'antd';
 import { PlusOutlined, DeleteOutlined, ArrowLeftOutlined, CheckCircleFilled } from '@ant-design/icons';
 import { Form, FormItem, useForm } from 'shared/ui/Form';
 import { Input } from 'shared/ui/Input';
@@ -16,6 +16,7 @@ import { useAuthStore } from 'entities/auth';
 import {
   buildFormPayload,
   buildRemarkTemplate,
+  getRemarkGuideKey,
   createEmptyInvoiceItem,
   createReimbursementForm,
   updateReimbursementForm,
@@ -24,6 +25,7 @@ import {
   fetchCategories,
   requiresPaymentRecord,
   isRemarkTemplate,
+  isEditableByStudent,
 } from 'entities/reimbursement';
 import { FileUploadField } from 'components/reimbursement';
 import { ROUTES } from 'shared/constants/routes';
@@ -90,6 +92,7 @@ export const ReimbursementFormPage = () => {
   const [autoAmountIndexes, setAutoAmountIndexes] = useState(() => new Set());
   const [explanationTemplateOpen, setExplanationTemplateOpen] = useState(false);
   const [draftSavedModalOpen, setDraftSavedModalOpen] = useState(false);
+  const [reviewRemark, setReviewRemark] = useState('');
 
   useEffect(() => {
     const loadOptions = async () => {
@@ -119,11 +122,12 @@ export const ReimbursementFormPage = () => {
       setPageLoading(true);
       try {
         const data = await getReimbursementForm(id);
-        if (data.status !== 'DRAFT') {
+        if (!isEditableByStudent(data.status)) {
           message.warning(t('reimbursement:message.notEditable'));
           navigate(ROUTES.STUDENT_HOME, { replace: true });
           return;
         }
+        setReviewRemark(data.reviewRemark || '');
         form.setFieldsValue({
           businessCategory: data.businessCategory,
           expenseCategory: data.expenseCategory,
@@ -355,25 +359,28 @@ export const ReimbursementFormPage = () => {
     }
   };
 
-  const handleBusinessCategoryChange = (businessCategory) => {
-    const currentExpenseCategory = form.getFieldValue('expenseCategory');
-    const allowedCodes = categoryOptions.linkage[businessCategory] || [];
-    if (currentExpenseCategory && !allowedCodes.includes(currentExpenseCategory)) {
-      form.setFieldsValue({ expenseCategory: undefined, remark: '' });
-    }
-  };
-
-  const applyRemarkTemplate = (expenseCategory, { force = false } = {}) => {
+  const applyRemarkTemplate = (expenseCategory, { force = false, businessCategory } = {}) => {
     if (!expenseCategory) {
       return;
     }
 
     const currentRemark = form.getFieldValue('remark');
-    const template = buildRemarkTemplate(expenseCategory, t, user);
+    const resolvedBusinessCategory = businessCategory ?? form.getFieldValue('businessCategory');
+    const template = buildRemarkTemplate(expenseCategory, t, user, resolvedBusinessCategory);
 
     if (force || isRemarkTemplate(currentRemark, t, user)) {
       form.setFieldsValue({ remark: template });
     }
+  };
+
+  const handleBusinessCategoryChange = (businessCategory) => {
+    const currentExpenseCategory = form.getFieldValue('expenseCategory');
+    const allowedCodes = categoryOptions.linkage[businessCategory] || [];
+    if (currentExpenseCategory && !allowedCodes.includes(currentExpenseCategory)) {
+      form.setFieldsValue({ expenseCategory: undefined, remark: '' });
+      return;
+    }
+    applyRemarkTemplate(currentExpenseCategory, { businessCategory });
   };
 
   const handleExpenseCategoryChange = (expenseCategory) => {
@@ -382,24 +389,25 @@ export const ReimbursementFormPage = () => {
 
   const handleFillRemarkTemplate = () => {
     const expenseCategory = form.getFieldValue('expenseCategory');
+    const businessCategory = form.getFieldValue('businessCategory');
     if (!expenseCategory) {
       return;
     }
 
     const currentRemark = (form.getFieldValue('remark') || '').trim();
-    const template = buildRemarkTemplate(expenseCategory, t, user).trim();
+    const template = buildRemarkTemplate(expenseCategory, t, user, businessCategory).trim();
 
     if (currentRemark && currentRemark !== template) {
       Modal.confirm({
         title: t('reimbursement:form.remarkFillTemplateConfirmTitle'),
         content: t('reimbursement:form.remarkFillTemplateConfirmContent'),
         centered: true,
-        onOk: () => applyRemarkTemplate(expenseCategory, { force: true }),
+        onOk: () => applyRemarkTemplate(expenseCategory, { force: true, businessCategory }),
       });
       return;
     }
 
-    applyRemarkTemplate(expenseCategory, { force: true });
+    applyRemarkTemplate(expenseCategory, { force: true, businessCategory });
   };
 
   if (pageLoading) {
@@ -427,6 +435,15 @@ export const ReimbursementFormPage = () => {
       </View>
 
       <View style={styles.container}>
+        {reviewRemark && (
+          <Alert
+            type="warning"
+            showIcon
+            message={t('reimbursement:detail.reviewRemark')}
+            description={reviewRemark}
+            style={{ marginBottom: 16 }}
+          />
+        )}
         <Form
           form={form}
           layout="vertical"
@@ -478,15 +495,17 @@ export const ReimbursementFormPage = () => {
 
           <FormItem
             noStyle
-            shouldUpdate={(prev, cur) => prev.expenseCategory !== cur.expenseCategory}
+            shouldUpdate={(prev, cur) => (
+              prev.expenseCategory !== cur.expenseCategory
+              || prev.businessCategory !== cur.businessCategory
+            )}
           >
             {({ getFieldValue }) => {
               const expenseCategory = getFieldValue('expenseCategory');
-              const remarkGuideKey = expenseCategory === 'MATERIAL'
-                ? 'remarkGuideMaterial'
-                : expenseCategory === 'TRAVEL'
-                  ? 'remarkGuideTravel'
-                  : null;
+              const remarkGuideKey = getRemarkGuideKey(
+                expenseCategory,
+                getFieldValue('businessCategory'),
+              );
 
               return (
                 <FormItem
@@ -535,6 +554,26 @@ export const ReimbursementFormPage = () => {
 
           <Text style={styles.sectionTitle}>{t('reimbursement:section.invoiceItems')}</Text>
           <Text style={styles.rulesHint}>{t('reimbursement:section.invoiceRules')}</Text>
+
+          <FormItem
+            noStyle
+            shouldUpdate={(prev, cur) => prev.expenseCategory !== cur.expenseCategory}
+          >
+            {({ getFieldValue }) => {
+              const expenseCategory = getFieldValue('expenseCategory');
+              if (expenseCategory === 'MATERIAL') {
+                return (
+                  <Text style={styles.rulesHint}>{t('reimbursement:section.materialRules')}</Text>
+                );
+              }
+              if (expenseCategory === 'TRAVEL') {
+                return (
+                  <Text style={styles.rulesHint}>{t('reimbursement:section.travelRules')}</Text>
+                );
+              }
+              return null;
+            }}
+          </FormItem>
 
           <Form.List
             name="items"

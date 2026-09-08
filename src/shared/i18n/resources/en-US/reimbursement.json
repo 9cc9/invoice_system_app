@@ -8,7 +8,9 @@
   "section": {
     "basicInfo": "Basic Information",
     "invoiceItems": "Invoice Items",
-    "invoiceRules": "(1) For a single invoice under ¥200, or official transfer invoices, only an e-invoice PDF is required;\n(2) For ¥200 or more and not official transfer, manually enter actual payment amount based on payment records and upload payment records (batch upload supported); if it differs from the invoice amount, explain why;\n(3) If invoice item names are generic (e.g. components, batch, set) or lack specific names/quantities, check the box and upload a stamped official purchase list; if unavailable, Taobao order screenshots may be uploaded as supporting detail;\n(4) If the issuer and payee differ, check the box and upload an explanation."
+    "invoiceRules": "(1) For a single invoice under ¥200, or official transfer invoices, only an e-invoice PDF is required;\n(2) For ¥200 or more and not official transfer, enter actual payment amount and upload payment records (Alipay/WeChat transaction pages, not Taobao product pages); explain any amount mismatch;\n(3) Invoice title must be UESTC with tax ID 121000004507193117;\n(4) Upload an explanation if issuer and payee differ; cash and private transfers are not supported.",
+    "materialRules": "[Material] Components/consumables only. Not reimbursable: books, reagents, printing, office supplies, computer accessories. Dev boards over ¥1000 are not allowed. Upload purchase lists for vague invoices.",
+    "travelRules": "[Travel] Upload flight itineraries, rail e-tickets, hotel invoices, etc. Long-distance transport is capped at the Chengdu-to-venue second-class high-speed rail fare; excess is self-paid. Upload hotel folios when room/night details are missing. Explain one-way or mismatched round trips in remarks."
   },
   "form": {
     "studentAccountNo": "Student ID",
@@ -20,10 +22,12 @@
     "remarkPlaceholder": "Optional notes for this form",
     "remarkHint": "Fill in each item below to help teachers review and enter data into the finance system.",
     "remarkSelectCategoryHint": "Select an expense category first to show the matching remark template.",
-    "remarkGuideMaterial": "Include: team name; competition stage and award level; whether you participated in the school competition; school competition award (required for sponsor subsidy); purpose of purchase.",
-    "remarkGuideTravel": "Include: team name; competition stage and awards; traveler name and student ID; origin and destination; travel dates; explain if one-way only or round-trip routes do not match; expense summary.",
-    "remarkTemplateMaterial": "Team name:\nCompetition stage and award level:\nParticipated in school competition:\nSchool competition award (if any):\nPurpose:",
-    "remarkTemplateTravel": "Team name:\nCompetition stage and awards:\nTraveler name and student ID: {{studentName}} ({{studentAccountNo}})\nOrigin → Destination:\nTravel dates:\nOne-way / round-trip note (required if one-way or routes do not match):\nExpense summary (transport XX, lodging XX, etc.):",
+    "remarkGuideMaterial": "Include: team ID; team member names and student IDs; stage and awards; school competition participation; school award (for sponsor subsidy); purpose.",
+    "remarkGuideTravel": "Include: team ID; competition stage and awards; team member names and student IDs; origin and destination; travel dates; explain if one-way only or round-trip routes do not match; expense summary.",
+    "remarkGuideTravelIot": "Include: team ID; competition stage (semifinal/final); awards; team member names and student IDs; origin and destination; travel dates; explain if one-way only or round-trip routes do not match; expense summary.",
+    "remarkTemplateMaterial": "Team ID:\nTeam member names and student IDs: {{studentName}} ({{studentAccountNo}})\nCompetition stage and award level:\nParticipated in school competition:\nSchool competition award (if any):\nPurpose:",
+    "remarkTemplateTravel": "Team ID:\nCompetition stage and awards:\nTeam member names and student IDs: {{studentName}} ({{studentAccountNo}})\nOrigin → Destination:\nTravel dates:\nOne-way / round-trip note (required if one-way or routes do not match):\nExpense summary (transport XX, lodging XX, etc.):",
+    "remarkTemplateTravelIot": "Team ID:\nCompetition stage (semifinal/final):\nAwards:\nTeam member names and student IDs: {{studentName}} ({{studentAccountNo}})\nOrigin → Destination:\nTravel dates:\nOne-way / round-trip note (required if one-way or routes do not match):\nExpense summary (transport XX, lodging XX, etc.):",
     "remarkFillTemplate": "Insert remark template",
     "remarkFillTemplateConfirmTitle": "Replace remark with template?",
     "remarkFillTemplateConfirmContent": "This will overwrite the current remark text."
@@ -60,6 +64,7 @@
     "submittedAt": "Submitted At",
     "createdAt": "Created At",
     "totalActualPaidAmount": "Total Actual Payment",
+    "reviewRemark": "Review Note",
     "yes": "Yes",
     "no": "No"
   },
@@ -79,7 +84,16 @@
     "button": {
       "search": "Search",
       "download": "Download",
-      "batchDownload": "Download ZIP ({{count}})"
+      "batchDownload": "Download ZIP ({{count}})",
+      "markStatus": "Mark Status"
+    },
+    "markStatus": {
+      "title": "Mark Status",
+      "placeholder": "Select target status",
+      "confirm": "Confirm",
+      "cancel": "Cancel",
+      "reviewRemarkPlaceholder": "Review note (optional)",
+      "reviewRemarkRequiredPlaceholder": "Explain why the form is returned (required)"
     },
     "empty": {
       "noForms": "No student forms in this business category"
@@ -87,7 +101,9 @@
     "message": {
       "selectFormsFirst": "Select at least one downloadable form",
       "downloadSuccess": "Download started",
-      "downloadFailed": "Download failed"
+      "downloadFailed": "Download failed",
+      "markStatusSuccess": "Status updated",
+      "markStatusFailed": "Failed to update status"
     }
   },
   "button": {
@@ -99,6 +115,7 @@
     "backToList": "Back to List",
     "viewDetail": "Details",
     "editDraft": "Edit Draft",
+    "editReturned": "Revise and Resubmit",
     "uploadRequired": "Upload File",
     "uploadOptional": "Upload File (optional)"
   },

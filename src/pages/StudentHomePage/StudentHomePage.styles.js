@@ -26,6 +26,12 @@ export const styles = {
     fontSize: '14px',
     color: '#64748b',
   },
+  userInfo: {
+    display: 'block',
+    fontSize: '14px',
+    color: '#475569',
+    lineHeight: 1.6,
+  },
   headerActions: {
     display: 'flex',
     gap: '12px',

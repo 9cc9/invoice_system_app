@@ -8,7 +8,9 @@
   "section": {
     "basicInfo": "Información Básica",
     "invoiceItems": "Facturas",
-    "invoiceRules": "(1) Si una factura es menor a ¥200, o es factura de transferencia oficial, solo se requiere PDF de factura electrónica;\n(2) Si es ¥200 o más y no es transferencia oficial, ingrese manualmente el monto pagado según comprobantes y suba comprobantes de pago (subida por lotes); si difiere del monto de factura, explique el motivo;\n(3) Si los nombres de ítems son genéricos (p. ej. componentes, lote, set) o faltan nombres/cantidades específicos, marque la casilla y suba una lista de compra oficial con sello; sin lista formal, puede subir capturas de pedidos de Taobao como respaldo;\n(4) Si emisor y beneficiario difieren, marque la casilla y suba una explicación."
+    "invoiceRules": "(1) Factura < ¥200 o transferencia oficial: solo PDF;\n(2) ≥ ¥200: monto pagado y comprobantes (página de transacción Alipay/WeChat, no página de producto Taobao);\n(3) Titular: UESTC, ID fiscal 121000004507193117;\n(4) Suba explicación si emisor y beneficiario difieren; no efectivo ni transferencias privadas.",
+    "materialRules": "[Material] Solo componentes/consumibles. No: libros, reactivos, impresión, oficina, accesorios PC. Placas > ¥1000 no permitidas. Lista de compra si la factura es genérica.",
+    "travelRules": "[Viaje] Suba itinerarios, boletos ferroviarios, facturas hotel, etc. Transporte limitado al tren 2.ª clase Chengdu-sede; exceso a cargo del estudiante. Folio hotel si faltan noches/habitaciones. Explique ida simple o rutas distintas en observaciones."
   },
   "form": {
     "studentAccountNo": "Número de estudiante",
@@ -20,10 +22,12 @@
     "remarkPlaceholder": "Notas opcionales",
     "remarkHint": "Complete cada ítem para facilitar la revisión y el ingreso en el sistema financiero.",
     "remarkSelectCategoryHint": "Seleccione primero la categoría de gasto para ver la plantilla de observación.",
-    "remarkGuideMaterial": "Incluya: nombre del equipo; etapa y premio; si participó en competencia escolar; premio escolar (para subsidio); propósito.",
-    "remarkGuideTravel": "Incluya: equipo; etapa y premios; viajero e ID; origen y destino; fechas; explique si es solo ida o rutas no coinciden; resumen de gastos.",
-    "remarkTemplateMaterial": "Nombre del equipo:\nEtapa y premio:\nParticipó en competencia escolar:\nPremio escolar (si aplica):\nPropósito:",
-    "remarkTemplateTravel": "Nombre del equipo:\nEtapa y premios:\nViajero e ID: {{studentName}} ({{studentAccountNo}})\nOrigen → Destino:\nFechas de viaje:\nNota ida/vuelta (si aplica):\nResumen de gastos:",
+    "remarkGuideMaterial": "Incluya: ID del equipo; nombres e IDs de miembros; etapa y premios; participación escolar; premio escolar; propósito.",
+    "remarkGuideTravel": "Incluya: ID del equipo; etapa y premios; nombres e IDs de miembros; origen y destino; fechas; explique si es solo ida o rutas no coinciden; resumen de gastos.",
+    "remarkGuideTravelIot": "Incluya: ID del equipo; etapa (semifinal/final); premios; nombres e IDs de miembros; origen y destino; fechas; explique si es solo ida o rutas no coinciden; resumen de gastos.",
+    "remarkTemplateMaterial": "ID del equipo:\nNombres e IDs de miembros: {{studentName}} ({{studentAccountNo}})\nEtapa y premio:\nParticipó en competencia escolar:\nPremio escolar (si aplica):\nPropósito:",
+    "remarkTemplateTravel": "ID del equipo:\nEtapa y premios:\nNombres e IDs de miembros: {{studentName}} ({{studentAccountNo}})\nOrigen → Destino:\nFechas de viaje:\nNota ida/vuelta (si aplica):\nResumen de gastos:",
+    "remarkTemplateTravelIot": "ID del equipo:\nEtapa (semifinal/final):\nPremios:\nNombres e IDs de miembros: {{studentName}} ({{studentAccountNo}})\nOrigen → Destino:\nFechas de viaje:\nNota ida/vuelta (si aplica):\nResumen de gastos:",
     "remarkFillTemplate": "Insertar plantilla",
     "remarkFillTemplateConfirmTitle": "¿Reemplazar observación?",
     "remarkFillTemplateConfirmContent": "Se sobrescribirá el texto actual."
@@ -60,6 +64,7 @@
     "submittedAt": "Fecha de envío",
     "createdAt": "Fecha de creación",
     "totalActualPaidAmount": "Total pagado real",
+    "reviewRemark": "Nota de revisión",
     "yes": "Sí",
     "no": "No"
   },
@@ -79,7 +84,16 @@
     "button": {
       "search": "Buscar",
       "download": "Descargar",
-      "batchDownload": "Descargar ZIP ({{count}})"
+      "batchDownload": "Descargar ZIP ({{count}})",
+      "markStatus": "Marcar estado"
+    },
+    "markStatus": {
+      "title": "Marcar estado",
+      "placeholder": "Seleccione el estado destino",
+      "confirm": "Confirmar",
+      "cancel": "Cancelar",
+      "reviewRemarkPlaceholder": "Nota de revisión (opcional)",
+      "reviewRemarkRequiredPlaceholder": "Indique el motivo de la devolución (obligatorio)"
     },
     "empty": {
       "noForms": "No hay formularios en esta categoría"
@@ -87,7 +101,9 @@
     "message": {
       "selectFormsFirst": "Seleccione al menos un formulario descargable",
       "downloadSuccess": "Descarga iniciada",
-      "downloadFailed": "Error al descargar"
+      "downloadFailed": "Error al descargar",
+      "markStatusSuccess": "Estado actualizado",
+      "markStatusFailed": "Error al actualizar el estado"
     }
   },
   "button": {
@@ -99,6 +115,7 @@
     "backToList": "Volver a la lista",
     "viewDetail": "Detalle",
     "editDraft": "Editar borrador",
+    "editReturned": "Corregir y reenviar",
     "uploadRequired": "Subir archivo",
     "uploadOptional": "Subir archivo (opcional)"
   },

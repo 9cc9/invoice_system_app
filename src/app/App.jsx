@@ -3,6 +3,7 @@
  */
 
 import { useEffect } from 'react';
+import { App as AntdApp, ConfigProvider } from 'antd';
 import { Router } from './router';
 import 'shared/i18n';
 import { useI18nStore } from 'shared/i18n/store';
@@ -23,5 +24,11 @@ export const App = () => {
     }
   }, [isAuthenticated, clearAuth]);
 
-  return <Router />;
+  return (
+    <ConfigProvider>
+      <AntdApp>
+        <Router />
+      </AntdApp>
+    </ConfigProvider>
+  );
 };

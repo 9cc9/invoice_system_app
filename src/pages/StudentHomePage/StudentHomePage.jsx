@@ -11,20 +11,13 @@ import { View } from 'shared/ui/View';
 import { Text } from 'shared/ui/Text';
 import { message } from 'shared/ui/Message';
 import { useAuthStore } from 'entities/auth';
-import { listReimbursementForms } from 'entities/reimbursement';
+import { listReimbursementForms, STATUS_COLOR, isEditableByStudent } from 'entities/reimbursement';
 import { ROUTES } from 'shared/constants/routes';
 import { useTranslation } from 'shared/hooks/useTranslation';
 import { styles } from './StudentHomePage.styles';
 
-const STATUS_COLOR = {
-  DRAFT: 'default',
-  SUBMITTED: 'processing',
-  DOWNLOADED: 'success',
-  ARCHIVED: 'warning',
-};
-
 export const StudentHomePage = () => {
-  const { logout } = useAuthStore();
+  const { user, logout } = useAuthStore();
   const { t } = useTranslation(['common', 'auth', 'reimbursement']);
   const navigate = useNavigate();
   const [forms, setForms] = useState([]);
@@ -57,7 +50,7 @@ export const StudentHomePage = () => {
   };
 
   const handleOpenForm = (form) => {
-    if (form.status === 'DRAFT') {
+    if (isEditableByStudent(form.status)) {
       navigate(ROUTES.STUDENT_FORM_EDIT(form.id));
       return;
     }
@@ -69,6 +62,13 @@ export const StudentHomePage = () => {
       <View style={styles.header}>
         <View>
           <Text style={styles.title}>{t('auth:title.uploadHome')}</Text>
+          {user && (
+            <Text style={styles.userInfo}>
+              {t('reimbursement:detail.studentName')}：{user.name}
+              {' · '}
+              {t('reimbursement:form.studentAccountNo')}：{user.accountNo}
+            </Text>
+          )}
         </View>
         <View style={styles.headerActions}>
           <Button type="primary" icon={<PlusOutlined />} onClick={handleCreate}>

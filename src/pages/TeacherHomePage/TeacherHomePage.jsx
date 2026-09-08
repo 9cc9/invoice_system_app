@@ -5,7 +5,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Tabs, Table, Tag, Input, Select, Empty } from 'antd';
-import { DownloadOutlined, EyeOutlined } from '@ant-design/icons';
+import { DownloadOutlined, EyeOutlined, TagsOutlined } from '@ant-design/icons';
 import { Button } from 'shared/ui/Button';
 import { View } from 'shared/ui/View';
 import { Text } from 'shared/ui/Text';
@@ -14,22 +14,19 @@ import { useAuthStore } from 'entities/auth';
 import {
   fetchCategories,
   fetchFormStatuses,
+  fetchAdminMarkableStatuses,
   listReimbursementForms,
   batchDownloadReimbursementForms,
   buildReimbursementDownloadFilename,
+  markReimbursementFormStatus,
+  MarkStatusModal,
+  STATUS_COLOR,
+  DOWNLOADABLE_STATUSES,
+  isStatusMarkable,
 } from 'entities/reimbursement';
 import { ROUTES } from 'shared/constants/routes';
 import { useTranslation } from 'shared/hooks/useTranslation';
 import { styles } from './TeacherHomePage.styles';
-
-const STATUS_COLOR = {
-  DRAFT: 'default',
-  SUBMITTED: 'processing',
-  DOWNLOADED: 'success',
-  ARCHIVED: 'warning',
-};
-
-const DOWNLOADABLE_STATUSES = new Set(['SUBMITTED', 'DOWNLOADED', 'ARCHIVED']);
 
 const formatDateTime = (value) => {
   if (!value) return '-';
@@ -54,10 +51,14 @@ export const TeacherHomePage = () => {
 
   const [businessCategories, setBusinessCategories] = useState([]);
   const [formStatuses, setFormStatuses] = useState([]);
+  const [adminMarkableStatuses, setAdminMarkableStatuses] = useState([]);
   const [activeTab, setActiveTab] = useState('');
   const [forms, setForms] = useState([]);
   const [loading, setLoading] = useState(false);
   const [downloading, setDownloading] = useState(false);
+  const [markStatusOpen, setMarkStatusOpen] = useState(false);
+  const [markStatusFormId, setMarkStatusFormId] = useState(null);
+  const [markingStatus, setMarkingStatus] = useState(false);
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [filters, setFilters] = useState({
     studentAccountNo: '',
@@ -68,13 +69,15 @@ export const TeacherHomePage = () => {
   useEffect(() => {
     const loadOptions = async () => {
       try {
-        const [categoryData, statuses] = await Promise.all([
+        const [categoryData, statuses, markableStatuses] = await Promise.all([
           fetchCategories(),
           fetchFormStatuses(),
+          fetchAdminMarkableStatuses(),
         ]);
         const categories = categoryData?.businessCategories || [];
         setBusinessCategories(categories);
         setFormStatuses((statuses || []).filter((item) => item.code !== 'DRAFT'));
+        setAdminMarkableStatuses(markableStatuses || []);
         if (categories?.length) {
           setActiveTab(categories[0].code);
         }
@@ -139,6 +142,31 @@ export const TeacherHomePage = () => {
     }
   };
 
+  const openMarkStatusModal = useCallback((formId) => {
+    setMarkStatusFormId(formId);
+    setMarkStatusOpen(true);
+  }, []);
+
+  const closeMarkStatusModal = useCallback(() => {
+    setMarkStatusOpen(false);
+    setMarkStatusFormId(null);
+  }, []);
+
+  const confirmMarkStatus = useCallback(async (status, reviewRemark) => {
+    if (!markStatusFormId) return;
+    setMarkingStatus(true);
+    try {
+      await markReimbursementFormStatus(markStatusFormId, { status, reviewRemark });
+      message.success(t('reimbursement:teacher.message.markStatusSuccess'));
+      closeMarkStatusModal();
+      await loadForms();
+    } catch (error) {
+      message.error(error.message || t('reimbursement:teacher.message.markStatusFailed'));
+    } finally {
+      setMarkingStatus(false);
+    }
+  }, [closeMarkStatusModal, loadForms, markStatusFormId, t]);
+
   const columns = useMemo(
     () => [
       {
@@ -200,7 +228,7 @@ export const TeacherHomePage = () => {
       {
         title: t('reimbursement:teacher.column.actions'),
         key: 'actions',
-        width: 160,
+        width: 220,
         fixed: 'right',
         render: (_, record) => (
           <View style={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
@@ -219,11 +247,24 @@ export const TeacherHomePage = () => {
             >
               {t('reimbursement:teacher.button.download')}
             </Button>
+            {isStatusMarkable(record.status) && (
+              <Button
+                type="link"
+                icon={<TagsOutlined />}
+                disabled={markingStatus}
+                onClick={(event) => {
+                  event.stopPropagation();
+                  openMarkStatusModal(record.id);
+                }}
+              >
+                {t('reimbursement:teacher.button.markStatus')}
+              </Button>
+            )}
           </View>
         ),
       },
     ],
-    [downloading, navigate, t],
+    [downloading, markingStatus, navigate, openMarkStatusModal, t],
   );
 
   const tabItems = businessCategories.map((category) => ({
@@ -333,6 +374,14 @@ export const TeacherHomePage = () => {
           }}
         />
       </View>
+
+      <MarkStatusModal
+        open={markStatusOpen}
+        loading={markingStatus}
+        statuses={adminMarkableStatuses}
+        onCancel={closeMarkStatusModal}
+        onConfirm={confirmMarkStatus}
+      />
     </View>
   );
 };
