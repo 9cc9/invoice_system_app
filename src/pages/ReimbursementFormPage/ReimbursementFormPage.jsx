@@ -850,11 +850,14 @@ export const ReimbursementFormPage = () => {
                                   valuePropName="checked"
                                 >
                                   <Checkbox
+                                    style={styles.checkboxMultiline}
                                     onChange={(event) => (
                                       handleIssuerPayeeInconsistentChange(index, event.target.checked)
                                     )}
                                   >
-                                    {t('reimbursement:item.issuerPayeeInconsistent')}
+                                    <View style={styles.checkboxLabel}>
+                                      <Text>{t('reimbursement:item.issuerPayeeInconsistent')}</Text>
+                                    </View>
                                   </Checkbox>
                                 </FormItem>
 

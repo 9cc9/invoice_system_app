@@ -235,7 +235,10 @@ export const TeacherHomePage = () => {
             <Button
               type="link"
               icon={<EyeOutlined />}
-              onClick={() => navigate(ROUTES.ADMIN_FORM_DETAIL(record.id))}
+              onClick={(event) => {
+                event.stopPropagation();
+                window.open(ROUTES.ADMIN_FORM_DETAIL(record.id), '_blank', 'noopener,noreferrer');
+              }}
             >
               {t('reimbursement:button.viewDetail')}
             </Button>
