@@ -37,6 +37,17 @@ export const requiresPaymentRecord = (amount, officialTransferInvoice = false) =
 
 export const REMARK_TEMPLATE_EXPENSE_CATEGORIES = ['MATERIAL', 'TRAVEL'];
 export const IOT_CONTEST_BUSINESS_CATEGORY = 'IOT_CONTEST';
+export const DACHUANG_PROJECT_BUSINESS_CATEGORY = 'DACHUANG_PROJECT';
+export const FRESHMAN_PROJECT_BUSINESS_CATEGORY = 'FRESHMAN_PROJECT';
+
+const OPTIONAL_MATERIAL_REMARK_BUSINESS_CATEGORIES = new Set([
+  DACHUANG_PROJECT_BUSINESS_CATEGORY,
+  FRESHMAN_PROJECT_BUSINESS_CATEGORY,
+]);
+
+const usesOptionalMaterialRemarkTemplate = (businessCategory) => (
+  OPTIONAL_MATERIAL_REMARK_BUSINESS_CATEGORIES.has(businessCategory)
+);
 
 export const buildRemarkTemplate = (expenseCategory, t, user = {}, businessCategory) => {
   const studentInfo = {
@@ -44,6 +55,9 @@ export const buildRemarkTemplate = (expenseCategory, t, user = {}, businessCateg
     studentAccountNo: user.accountNo || '',
   };
   if (expenseCategory === 'MATERIAL') {
+    if (usesOptionalMaterialRemarkTemplate(businessCategory)) {
+      return '';
+    }
     return t('reimbursement:form.remarkTemplateMaterial', studentInfo);
   }
   if (expenseCategory === 'TRAVEL') {
@@ -57,6 +71,9 @@ export const buildRemarkTemplate = (expenseCategory, t, user = {}, businessCateg
 
 export const getRemarkGuideKey = (expenseCategory, businessCategory) => {
   if (expenseCategory === 'MATERIAL') {
+    if (usesOptionalMaterialRemarkTemplate(businessCategory)) {
+      return null;
+    }
     return 'remarkGuideMaterial';
   }
   if (expenseCategory === 'TRAVEL') {
@@ -66,6 +83,21 @@ export const getRemarkGuideKey = (expenseCategory, businessCategory) => {
   }
   return null;
 };
+
+/** 是否展示竞赛类备注填写框架与「填入备注模板」 */
+export const shouldShowRemarkFramework = (expenseCategory, businessCategory) => {
+  if (!expenseCategory) {
+    return false;
+  }
+  if (expenseCategory === 'MATERIAL' && usesOptionalMaterialRemarkTemplate(businessCategory)) {
+    return false;
+  }
+  return expenseCategory === 'MATERIAL' || expenseCategory === 'TRAVEL';
+};
+
+export const isOptionalMaterialRemarkBusiness = (expenseCategory, businessCategory) => (
+  expenseCategory === 'MATERIAL' && usesOptionalMaterialRemarkTemplate(businessCategory)
+);
 
 export const isRemarkTemplate = (remark, t, user = {}) => {
   const normalizedRemark = (remark || '').trim();
@@ -78,7 +110,12 @@ export const isRemarkTemplate = (remark, t, user = {}) => {
         buildRemarkTemplate(category, t, user),
         buildRemarkTemplate(category, t, user, IOT_CONTEST_BUSINESS_CATEGORY),
       ]
-      : [buildRemarkTemplate(category, t, user)]
+      : [
+        buildRemarkTemplate(category, t, user),
+        ...[...OPTIONAL_MATERIAL_REMARK_BUSINESS_CATEGORIES].map((code) => (
+          buildRemarkTemplate(category, t, user, code)
+        )),
+      ]
   ));
   return templates.some((template) => template.trim() === normalizedRemark);
 };

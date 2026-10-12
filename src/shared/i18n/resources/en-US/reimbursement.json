@@ -20,6 +20,7 @@
     "expenseCategoryPlaceholder": "Select expense category",
     "remark": "Remark",
     "remarkPlaceholder": "Optional notes for this form",
+    "remarkOptionalNoTemplate": "Optional. Material claims for this business category do not use the competition remark template.",
     "remarkHint": "Fill in each item below to help teachers review and enter data into the finance system.",
     "remarkSelectCategoryHint": "Select an expense category first to show the matching remark template.",
     "remarkGuideMaterial": "Include: team ID; team member names and student IDs; stage and awards; school competition participation; school award (for sponsor subsidy); purpose.",

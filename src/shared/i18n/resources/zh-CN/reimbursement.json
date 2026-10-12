@@ -20,6 +20,7 @@
     "expenseCategoryPlaceholder": "请选择报销类目",
     "remark": "备注",
     "remarkPlaceholder": "可选，填写整单说明",
+    "remarkOptionalNoTemplate": "选填，本业务材料费无需按竞赛备注模板填写。",
     "remarkHint": "请按下列框架逐项填写，便于老师审核与录入财务系统。",
     "remarkSelectCategoryHint": "请先选择报销类目，系统将提供对应填写框架。",
     "remarkGuideMaterial": "须包含：团队编号；团队成员姓名、学号；参赛赛段（校赛/省赛/国赛）及获奖等级；是否参加校赛（未参加校赛报材料费不予报销）；校赛获奖等级（涉及赞助商补贴时必填）；用途说明。",

@@ -20,6 +20,7 @@
     "expenseCategoryPlaceholder": "Seleccione categoría de gasto",
     "remark": "Observación",
     "remarkPlaceholder": "Notas opcionales",
+    "remarkOptionalNoTemplate": "Opcional. El material de esta categoría de negocio no usa la plantilla de competencia.",
     "remarkHint": "Complete cada ítem para facilitar la revisión y el ingreso en el sistema financiero.",
     "remarkSelectCategoryHint": "Seleccione primero la categoría de gasto para ver la plantilla de observación.",
     "remarkGuideMaterial": "Incluya: ID del equipo; nombres e IDs de miembros; etapa y premios; participación escolar; premio escolar; propósito.",

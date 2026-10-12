@@ -17,6 +17,8 @@ import {
   buildFormPayload,
   buildRemarkTemplate,
   getRemarkGuideKey,
+  shouldShowRemarkFramework,
+  isOptionalMaterialRemarkBusiness,
   createEmptyInvoiceItem,
   createReimbursementForm,
   updateReimbursementForm,
@@ -502,9 +504,12 @@ export const ReimbursementFormPage = () => {
           >
             {({ getFieldValue }) => {
               const expenseCategory = getFieldValue('expenseCategory');
-              const remarkGuideKey = getRemarkGuideKey(
+              const businessCategory = getFieldValue('businessCategory');
+              const remarkGuideKey = getRemarkGuideKey(expenseCategory, businessCategory);
+              const showRemarkFramework = shouldShowRemarkFramework(expenseCategory, businessCategory);
+              const optionalMaterialRemark = isOptionalMaterialRemarkBusiness(
                 expenseCategory,
-                getFieldValue('businessCategory'),
+                businessCategory,
               );
 
               return (
@@ -513,7 +518,7 @@ export const ReimbursementFormPage = () => {
                   label={t('reimbursement:form.remark')}
                   extra={(
                     <View style={styles.remarkExtra}>
-                      {remarkGuideKey ? (
+                      {showRemarkFramework ? (
                         <>
                           <Text style={styles.remarkHint}>
                             {t('reimbursement:form.remarkHint')}
@@ -529,6 +534,12 @@ export const ReimbursementFormPage = () => {
                             {t('reimbursement:form.remarkFillTemplate')}
                           </Button>
                         </>
+                      ) : expenseCategory ? (
+                        <Text style={styles.remarkGuide}>
+                          {optionalMaterialRemark
+                            ? t('reimbursement:form.remarkOptionalNoTemplate')
+                            : t('reimbursement:form.remarkPlaceholder')}
+                        </Text>
                       ) : (
                         <Text style={styles.remarkGuide}>
                           {t('reimbursement:form.remarkSelectCategoryHint')}
@@ -542,9 +553,11 @@ export const ReimbursementFormPage = () => {
                     maxLength={512}
                     showCount
                     placeholder={
-                      remarkGuideKey
+                      showRemarkFramework
                         ? undefined
-                        : t('reimbursement:form.remarkSelectCategoryHint')
+                        : expenseCategory
+                          ? t('reimbursement:form.remarkPlaceholder')
+                          : t('reimbursement:form.remarkSelectCategoryHint')
                     }
                   />
                 </FormItem>
